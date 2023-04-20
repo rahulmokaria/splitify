@@ -256,7 +256,7 @@ class _LoginPageState extends State<LoginPage> {
               //login button
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: _width * 10,
+                height: _width * 15,
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(90)),

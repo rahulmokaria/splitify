@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'package:splitify/screens/customer/expense_tracker.dart';
+import 'package:splitify/screens/customer/home_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import 'package:splitify/screens/login_page.dart';
 import 'package:splitify/screens/sign_up_page.dart';
 
@@ -19,7 +23,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginPage(),
+      home: const CusHomePage(),
+      // home: const SignUpPage(),
     );
   }
 }
