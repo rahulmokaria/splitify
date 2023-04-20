@@ -36,6 +36,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   glassmorphism: ^3.0.0
+  salomon_bottom_bar: ^3.3.2
+  figma_squircle: ^0.5.3
+  syncfusion_flutter_charts: ^21.1.41
 
 dev_dependencies:
   flutter_test:
