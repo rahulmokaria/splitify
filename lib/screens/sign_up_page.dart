@@ -1,10 +1,15 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-
+import 'package:http/http.dart' as http;
 import '../utils/colors.dart';
+import '../widgets/show_snackbar.dart';
 import '../widgets/text_field_ui.dart';
 import 'login_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Color primary = const Color(0xfffe2479);
 // const Color secondary = Color(0xff0e0b16);
@@ -40,19 +45,61 @@ class _SignUpPageState extends State<SignUpPage> {
       _isLoading = true;
     });
 
-    // String res = await AuthMethods().signUpUser(
-    //     email: _emailTextController.text,
-    //     password: _passwordTextController.text,
-    //     );
+    try {
+        var email=_emailTextController.text;
+        var name=_nameTextController.text;
+        var password=_passwordTextController.text;
+        var confirmpassword=_confirmPasswordTextController.text;
+
+        if(password!=confirmpassword){
+          return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              "Password not matching", "Password and confirm password is not matching", pink, Icons.close));
+        }
+        String endPoint=dotenv.env["URL"].toString();
+        if(isShopkeeper){
+          var response=await http.post(Uri.parse(endPoint+"/api/shopkeeper/register"),
+          body:{
+            "email":email.toString(),
+            "name":name.toString(),
+            "password":password.toString()
+          });
+          var res=jsonDecode(response.body) as Map<String,dynamic>;
+          if(!res['flag']){
+            return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              res['message'], res['message'], pink, Icons.close));
+          }
+          else{
+            
+          }
+        }
+        else{
+          var response=await http.post(Uri.parse(endPoint+"/api/user/register")
+          ,body:{
+            "email":email.toString(),
+            "name":name.toString(),
+            "password":password.toString()
+          });
+          var res=jsonDecode(response.body) as Map<String,dynamic>;
+          if(!res['flag']){
+            return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              res['message'], res['message'], pink, Icons.close));
+          }
+          else{
+            
+          }
+        }
+        
+    } catch (e) {
+      return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              "Error at registersation", "Please contact admin to resolve", pink, Icons.close));
+    }
+   
+
+
     setState(() {
       _isLoading = false;
     });
 
-    // if (res == 'success') {
-    //   // gotoHome();
-    // } else {
-    //   // showSnackBar(res, context);
-    // }
   }
 
   @override
@@ -222,8 +269,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(90)),
                 child: ElevatedButton(
-                  // onPressed: () => loginUser(),
-                  onPressed: () {},
+                  onPressed: () => signUpUser(),
+                  // onPressed: () {},
 
                   style: ButtonStyle(
                     backgroundColor:

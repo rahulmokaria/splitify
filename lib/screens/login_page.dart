@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
 import '../utils/colors.dart';
 import '../widgets/show_snackbar.dart';
 import '../widgets/text_field_ui.dart';
 import 'sign_up_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -19,21 +22,65 @@ class _LoginPageState extends State<LoginPage> {
 
   bool isShopkeeper = false;
   bool _isLoading = false;
-  void loginUser() async {
+  
+  void postdata() async{
+    try {
+      
+    } catch (e) {
+      
+    }
+    var response=await http.post(Uri.parse('http://localhost:3000/api/user/register')
+    ,body:{
+      "email":"rgdnvdn@gmail.com",
+      "name":"rahul",
+      "password":"1234"
+    });
+    print(response.body);
+  }
+  loginUser() async {
     setState(() {
       _isLoading = true;
     });
-    // String res = await AuthMethods().loginUser(
-    //   email: _emailTextController.text,
-    //   password: _passwordTextController.text,
-    // );
+    try {
+      var email=_emailTextController.text;
+      var password=_passwordTextController.text;
+      String endPoint=dotenv.env["URL"].toString();
+      if(isShopkeeper){
+        var response=await http.post(Uri.parse(endPoint+"/api/shopkeeper/login"),
+          body:{
+            "email":email.toString(),
+            "password":password.toString()
+          });
+          var res=jsonDecode(response.body) as Map<String,dynamic>;
+          if(!res['flag']){
+            return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              res['message'], res['message'], pink, Icons.close));
+          }
+          else{
+            // print(res['message']);
+          }
+      }
+      else{
+           var response=await http.post(Uri.parse(endPoint+"/api/user/login"),
+          body:{
+            "email":email.toString(),
+            "password":password.toString()
+          });
+          var res=jsonDecode(response.body) as Map<String,dynamic>;
+          if(!res['flag']){
+            return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              res['message'], res['message'], pink, Icons.close));
+          }
+          else{
+            
+          }
+      }
+    } catch (e) {
+      return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              "Error at registersation", "Please contact admin to resolve", pink, Icons.close));
+    }
 
-    // if (res == 'success' || res == 'Success') {
-    //   gotoHome();
-    // } else {
-    //   ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-    //       "Oh Snap!", res, pink, CupertinoIcons.exclamationmark_circle));
-    // }
+    
     setState(() {
       _isLoading = false;
     });
