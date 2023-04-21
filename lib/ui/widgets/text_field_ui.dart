@@ -2,21 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../utils/colors.dart';
 
-TextFormField textFieldUi(String text, IconData icon, bool isPasswordType,
-    TextEditingController controller, TextInputType inputType) {
+TextFormField textFieldUi(
+    {required String text,
+    required IconData icon,
+    required bool isPasswordType,
+    required Color textColor,
+    required TextEditingController controller,
+    required TextInputType inputType}) {
   return TextFormField(
     controller: controller,
     obscureText: isPasswordType,
-    cursorColor: primary,
+    cursorColor: textColor,
     keyboardType: inputType,
-    style: TextStyle(color: primary),
+    style: TextStyle(color: textColor),
     decoration: InputDecoration(
       prefixIcon: Icon(
         icon,
-        color: primary,
+        color: textColor,
       ),
       labelText: text,
-      labelStyle: TextStyle(color: primary),
+      labelStyle: TextStyle(color: textColor),
       filled: true,
       floatingLabelBehavior: FloatingLabelBehavior.never,
       fillColor: white.withOpacity(0.2),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:splitify/screens/customer/expense_tracker.dart';
+import 'package:splitify/ui/screens/customer/expense_tracker.dart';
 
 import '../../utils/colors.dart';
 

@@ -222,27 +222,13 @@ class _SignUpPageState extends State<SignUpPage> {
               //email
               Container(
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi('Email', Icons.person, false,
-                    _emailTextController, TextInputType.emailAddress),
-              ),
-              Flexible(
-                flex: 1,
-                child: Container(),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi('Name', Icons.person, false,
-                    _nameTextController, TextInputType.name),
-              ),
-              Flexible(
-                flex: 1,
-                child: Container(),
-              ),
-              //password
-              Container(
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi('New Password', Icons.lock_outline, true,
-                    _passwordTextController, TextInputType.visiblePassword),
+                child: textFieldUi(
+                    text: 'Email',
+                    icon: Icons.person,
+                    textColor: primary,
+                    isPasswordType: false,
+                    controller: _emailTextController,
+                    inputType: TextInputType.emailAddress),
               ),
               Flexible(
                 flex: 1,
@@ -251,11 +237,41 @@ class _SignUpPageState extends State<SignUpPage> {
               Container(
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
                 child: textFieldUi(
-                    'Confirm Password',
-                    Icons.lock_outline,
-                    true,
-                    _confirmPasswordTextController,
-                    TextInputType.visiblePassword),
+                    text: 'Name',
+                    icon: Icons.person,
+                    textColor: primary,
+                    isPasswordType: false,
+                    controller: _nameTextController,
+                    inputType: TextInputType.name),
+              ),
+              Flexible(
+                flex: 1,
+                child: Container(),
+              ),
+              //password
+              Container(
+                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                child: textFieldUi(
+                    text: 'New Password',
+                    icon: Icons.lock_outline,
+                    textColor: primary,
+                    isPasswordType: true,
+                    controller: _passwordTextController,
+                    inputType: TextInputType.visiblePassword),
+              ),
+              Flexible(
+                flex: 1,
+                child: Container(),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                child: textFieldUi(
+                    text: 'Confirm Password',
+                    icon: Icons.lock_outline,
+                    textColor: primary,
+                    isPasswordType: true,
+                    controller: _confirmPasswordTextController,
+                    inputType: TextInputType.visiblePassword),
               ),
               Flexible(
                 flex: 1,

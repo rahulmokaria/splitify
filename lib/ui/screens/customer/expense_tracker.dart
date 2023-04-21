@@ -4,7 +4,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:splitify/utils/colors.dart';
+import 'package:splitify/ui/screens/customer/transaction_page.dart';
+import 'package:splitify/ui/utils/colors.dart';
 
 import '../../widgets/glassmorphic_container.dart';
 import '../../widgets/pie_chart.dart';
@@ -19,6 +20,10 @@ class ExpenseTracker extends StatefulWidget {
 
 class _ExpenseTrackerState extends State<ExpenseTracker> {
   var _currentIndex = 0;
+  String userName = 'User';
+  double totBalance = 12230;
+  double totExpense = 2000;
+  double totIncome = 14230;
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width * 0.01;
@@ -51,7 +56,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Hello, User',
+                    'Hello, ' + userName,
                     style: TextStyle(color: white),
                     textScaleFactor: 1.5,
                   ),
@@ -86,44 +91,86 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                "Your Balance",
-                                textScaleFactor: 1.2,
-                                style: TextStyle(color: white.withOpacity(0.5)),
+                      Container(
+                        width: _width * 50,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  "Your Balance",
+                                  textScaleFactor: 1.2,
+                                  style:
+                                      TextStyle(color: white.withOpacity(0.5)),
+                                ),
+                                Text(
+                                  '₹ ' + totBalance.toString(),
+                                  textScaleFactor: 1.5,
+                                  style: TextStyle(color: white),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              width: _width * 50,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    '**** **** **** 5463',
+                                    textScaleFactor: 1.5,
+                                    style: TextStyle(color: white),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                '₹ 12230',
-                                textScaleFactor: 1.5,
-                                style: TextStyle(color: white),
+                            ),
+                            Container(
+                              width: _width * 50,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Flexible(flex: 1, child: Container()),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        'Tot Inc',
+                                        textScaleFactor: 0.9,
+                                        style: TextStyle(
+                                            color: white.withOpacity(0.5)),
+                                      ),
+                                      Text(
+                                        totIncome.toString(),
+                                        textScaleFactor: 1.2,
+                                        style: TextStyle(color: white),
+                                      )
+                                    ],
+                                  ),
+                                  Flexible(flex: 1, child: Container()),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        'Tot Exp',
+                                        textScaleFactor: 0.9,
+                                        style: TextStyle(
+                                            color: white.withOpacity(0.5)),
+                                      ),
+                                      SizedBox(
+                                        width: _width * 5,
+                                      ),
+                                      Text(
+                                        totExpense.toString(),
+                                        textScaleFactor: 1.2,
+                                        style: TextStyle(color: white),
+                                      )
+                                    ],
+                                  ),
+                                  // Flexible(flex: 1, child: Container()),
+                                ],
                               ),
-                            ],
-                          ),
-                          Text(
-                            '**** **** **** 5463',
-                            textScaleFactor: 1.5,
-                            style: TextStyle(color: white),
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                'Valid Thru',
-                                textScaleFactor: 1.2,
-                                style: TextStyle(color: white.withOpacity(0.5)),
-                              ),
-                              Text(
-                                '01-31 Mar',
-                                textScaleFactor: 1.2,
-                                style: TextStyle(color: white),
-                              )
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         width: _width * 5,
@@ -142,12 +189,12 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                           children: [
                             Image(
                               image: AssetImage(
-                                'chip2.png',
+                                'assets/chip2.png',
                               ),
                               width: _width * 10,
                             ),
                             Image.asset(
-                              'chip3.png',
+                              'assets/chip3.png',
                               width: _width * 10,
                             )
                           ],
@@ -241,19 +288,28 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                   borderRadius: 20,
                   end: 0,
                   start: 0.25,
-                  child: Column(
-                    children: [
-                      Container(
-                        height: _width * 10,
-                        child: Center(
-                            child: Text(
-                          'All Transactions',
-                          textScaleFactor: 1.2,
-                          style: TextStyle(color: white),
-                        )),
-                      ),
-                      Text('Show More >>>'),
-                    ],
+                  child: InkWell(
+                    // onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    //     builder: (_) => const TransactionPage())),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: _width * 3,
+                        ),
+                        Container(
+                          height: _width * 10,
+                          child: Center(
+                              child: Text(
+                            'Recent Transactions',
+                            textScaleFactor: 1.2,
+                            style: TextStyle(color: white),
+                          )),
+                        ),
+                        SizedBox(
+                          height: _width * 3,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

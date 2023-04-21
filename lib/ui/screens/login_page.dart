@@ -213,8 +213,13 @@ class _LoginPageState extends State<LoginPage> {
               //email
               Container(
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi('Email', Icons.person, false,
-                    _emailTextController, TextInputType.emailAddress),
+                child: textFieldUi(
+                    text: 'Email',
+                    icon: Icons.person,
+                    textColor: primary,
+                    isPasswordType: false,
+                    controller: _emailTextController,
+                    inputType: TextInputType.emailAddress),
               ),
               Flexible(
                 flex: 1,
@@ -224,8 +229,13 @@ class _LoginPageState extends State<LoginPage> {
               //password
               Container(
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi('Password', Icons.lock_outline, true,
-                    _passwordTextController, TextInputType.visiblePassword),
+                child: textFieldUi(
+                    text: 'Password',
+                    icon: Icons.lock_outline,
+                    textColor: primary,
+                    isPasswordType: true,
+                    controller: _passwordTextController,
+                    inputType: TextInputType.visiblePassword),
               ),
               Container(
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
