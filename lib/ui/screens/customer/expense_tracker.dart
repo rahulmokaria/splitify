@@ -1,20 +1,18 @@
-import 'dart:convert';
-
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:splitify/utils/colors.dart';
-import 'package:http/http.dart' as http;
+import '../../utils/colors.dart';
 import '../../widgets/glassmorphic_container.dart';
 import '../../widgets/pie_chart.dart';
-import '../../widgets/show_snackbar.dart';
 import 'new_expense.dart';
-
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import '../../widgets/show_snackbar.dart';
 class ExpenseTracker extends StatefulWidget {
   const ExpenseTracker({super.key});
 
@@ -48,6 +46,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
     super.initState();
     userDetails();
   }
+  @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width * 0.01;
     double _height = MediaQuery.of(context).size.height * 0.01;

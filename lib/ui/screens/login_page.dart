@@ -2,68 +2,42 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:http/http.dart' as http;
 import '../utils/colors.dart';
 import '../widgets/show_snackbar.dart';
 import '../widgets/text_field_ui.dart';
-import 'login_page.dart';
+import 'customer/home_page.dart';
+import 'sign_up_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-// Color primary = const Color(0xfffe2479);
-// const Color secondary = Color(0xff0e0b16);
-// const Color secondaryLight = Color(0xff231539);
-
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordTextController = TextEditingController();
   final TextEditingController _emailTextController = TextEditingController();
-  final TextEditingController _confirmPasswordTextController =
-      TextEditingController();
-  final TextEditingController _nameTextController = TextEditingController();
 
   bool isShopkeeper = false;
   bool _isLoading = false;
-  @override
-  dispose() {
-    super.dispose();
-    _emailTextController.dispose();
-    _passwordTextController.dispose();
-    _confirmPasswordTextController.dispose();
-    _nameTextController.dispose();
-  }
-
-  signUpUser() async {
+  
+ 
+  loginUser() async {
     setState(() {
       _isLoading = true;
     });
-    void gotoLogin() {
-    Navigator.of(context)
-    .pushReplacement(MaterialPageRoute(builder: (_) => const LoginPage()));
-    }
     try {
-        var email=_emailTextController.text;
-        var name=_nameTextController.text;
-        var password=_passwordTextController.text;
-        var confirmpassword=_confirmPasswordTextController.text;
-
-        if(password!=confirmpassword){
-          return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Password not matching", "Password and confirm password is not matching", pink, Icons.close));
-        }
-        String endPoint=dotenv.env["URL"].toString();
-        if(isShopkeeper){
-          var response=await http.post(Uri.parse(endPoint+"/api/shopkeeper/register"),
+      final storage = new FlutterSecureStorage();
+      var email=_emailTextController.text;
+      var password=_passwordTextController.text;
+      String endPoint=dotenv.env["URL"].toString();
+      if(isShopkeeper){
+        var response=await http.post(Uri.parse(endPoint+"/api/shopkeeper/login"),
           body:{
             "email":email.toString(),
-            "name":name.toString(),
             "password":password.toString()
           });
           var res=jsonDecode(response.body) as Map<String,dynamic>;
@@ -72,16 +46,15 @@ class _SignUpPageState extends State<SignUpPage> {
               res['message'], res['message'], pink, Icons.close));
           }
           else{
-            ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Successfully registered" , "You can login now", green, Icons.celebration));
-            return gotoLogin();
+           await storage.write(key: "authtoken", value: res['message']);
+           String? value = await storage.read(key: "authtoken");
+           return gotoHome();
           }
-        }
-        else{
-          var response=await http.post(Uri.parse(endPoint+"/api/user/register")
-          ,body:{
+      }
+      else{
+           var response=await http.post(Uri.parse(endPoint+"/api/user/login"),
+          body:{
             "email":email.toString(),
-            "name":name.toString(),
             "password":password.toString()
           });
           var res=jsonDecode(response.body) as Map<String,dynamic>;
@@ -90,23 +63,26 @@ class _SignUpPageState extends State<SignUpPage> {
               res['message'], res['message'], pink, Icons.close));
           }
           else{
-            ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Successfully registered" , "You can login now", green, Icons.celebration));
-             return gotoLogin();
+           await storage.write(key: "authtoken", value: res['message']);
+           String? value = await storage.read(key: "authtoken");
+           print(value);
+           return gotoHome();
           }
-        }
-        
+      }
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
               "Error at registersation", "Please contact admin to resolve", pink, Icons.close));
     }
-   
 
-
+    
     setState(() {
       _isLoading = false;
     });
+  }
 
+  void gotoHome() {
+    Navigator.of(context)
+    .pushReplacement(MaterialPageRoute(builder: (_) => const CusHomePage()));
   }
 
   @override
@@ -119,10 +95,12 @@ class _SignUpPageState extends State<SignUpPage> {
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/signupbg1.png'),
+              image: AssetImage(
+                'assets/signupbg1.png',
+              ),
               fit: BoxFit.cover,
             ),
-            color: secondary,
+            // color: secondary,
           ),
           child: Column(
             children: [
@@ -137,7 +115,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   left: _width * 10,
                 ),
                 child: Text(
-                  "Sign Up",
+                  "Login",
                   textScaleFactor: 3,
                   style: TextStyle(
                     color: primary,
@@ -229,41 +207,52 @@ class _SignUpPageState extends State<SignUpPage> {
               //email
               Container(
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi('Email', Icons.person, false,
-                    _emailTextController, TextInputType.emailAddress),
+                child: textFieldUi(
+                    text: 'Email',
+                    icon: Icons.person,
+                    textColor: primary,
+                    isPasswordType: false,
+                    controller: _emailTextController,
+                    inputType: TextInputType.emailAddress),
               ),
               Flexible(
                 flex: 1,
                 child: Container(),
               ),
-              Container(
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi('Name', Icons.person, false,
-                    _nameTextController, TextInputType.name),
-              ),
-              Flexible(
-                flex: 1,
-                child: Container(),
-              ),
+
               //password
               Container(
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi('New Password', Icons.lock_outline, true,
-                    _passwordTextController, TextInputType.visiblePassword),
-              ),
-              Flexible(
-                flex: 1,
-                child: Container(),
+                child: textFieldUi(
+                    text: 'Password',
+                    icon: Icons.lock_outline,
+                    textColor: primary,
+                    isPasswordType: true,
+                    controller: _passwordTextController,
+                    inputType: TextInputType.visiblePassword),
               ),
               Container(
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi(
-                    'Confirm Password',
-                    Icons.lock_outline,
-                    true,
-                    _confirmPasswordTextController,
-                    TextInputType.visiblePassword),
+                child: TextButton(
+                  onPressed: () {
+                    // Navigator.of(context).push(
+                    //   MaterialPageRoute(
+                    //     builder: (_) => const ForgotPasswordPage(),
+                    //   ),
+                    // );
+                  },
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'Forgot Password',
+                      style: TextStyle(
+                        color: primary,
+                      ),
+                    ),
+                  ),
+                ),
               ),
+              //forgotpassword
               Flexible(
                 flex: 1,
                 child: Container(),
@@ -271,14 +260,12 @@ class _SignUpPageState extends State<SignUpPage> {
               //login button
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: _width * 10,
+                height: _width * 15,
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(90)),
                 child: ElevatedButton(
-                  onPressed: () => signUpUser(),
-                  // onPressed: () {},
-
+                  onPressed: () => loginUser(),
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.resolveWith((states) {
@@ -316,22 +303,23 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Already have an account?",
+                    "Don't have an account?",
                     style: TextStyle(
                       fontSize: 18,
                       color: white,
                     ),
                   ),
                   TextButton(
+                    // onPressed: openSignUp,
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => const LoginPage(),
+                          builder: (_) => const SignUpPage(),
                         ),
                       );
                     },
                     child: Text(
-                      "Login",
+                      "Sign Up",
                       style: TextStyle(
                         fontSize: 18,
                         color: primary,
