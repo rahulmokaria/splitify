@@ -23,8 +23,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const CusHomePage(),
-      // home: const SignUpPage(),
+      // home: const CusHomePage(),
+      home: const LoginPage(),
     );
   }
 }

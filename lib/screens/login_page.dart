@@ -6,9 +6,10 @@ import 'package:http/http.dart' as http;
 import '../utils/colors.dart';
 import '../widgets/show_snackbar.dart';
 import '../widgets/text_field_ui.dart';
+import 'customer/home_page.dart';
 import 'sign_up_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -23,25 +24,13 @@ class _LoginPageState extends State<LoginPage> {
   bool isShopkeeper = false;
   bool _isLoading = false;
   
-  void postdata() async{
-    try {
-      
-    } catch (e) {
-      
-    }
-    var response=await http.post(Uri.parse('http://localhost:3000/api/user/register')
-    ,body:{
-      "email":"rgdnvdn@gmail.com",
-      "name":"rahul",
-      "password":"1234"
-    });
-    print(response.body);
-  }
+ 
   loginUser() async {
     setState(() {
       _isLoading = true;
     });
     try {
+      final storage = new FlutterSecureStorage();
       var email=_emailTextController.text;
       var password=_passwordTextController.text;
       String endPoint=dotenv.env["URL"].toString();
@@ -57,7 +46,9 @@ class _LoginPageState extends State<LoginPage> {
               res['message'], res['message'], pink, Icons.close));
           }
           else{
-            // print(res['message']);
+           await storage.write(key: "authtoken", value: res['message']);
+           String? value = await storage.read(key: "authtoken");
+           return gotoHome();
           }
       }
       else{
@@ -72,7 +63,10 @@ class _LoginPageState extends State<LoginPage> {
               res['message'], res['message'], pink, Icons.close));
           }
           else{
-            
+           await storage.write(key: "authtoken", value: res['message']);
+           String? value = await storage.read(key: "authtoken");
+           print(value);
+           return gotoHome();
           }
       }
     } catch (e) {
@@ -87,8 +81,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void gotoHome() {
-    // Navigator.of(context)
-    // .pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
+    Navigator.of(context)
+    .pushReplacement(MaterialPageRoute(builder: (_) => const CusHomePage()));
   }
 
   @override

@@ -1,13 +1,18 @@
+import 'dart:convert';
+
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:splitify/utils/colors.dart';
-
+import 'package:http/http.dart' as http;
 import '../../widgets/glassmorphic_container.dart';
 import '../../widgets/pie_chart.dart';
+import '../../widgets/show_snackbar.dart';
 import 'new_expense.dart';
 
 class ExpenseTracker extends StatefulWidget {
@@ -19,7 +24,30 @@ class ExpenseTracker extends StatefulWidget {
 
 class _ExpenseTrackerState extends State<ExpenseTracker> {
   var _currentIndex = 0;
+  String endPoint=dotenv.env["URL"].toString();
+  final storage = new FlutterSecureStorage();
+  
   @override
+  userDetails() async{
+    try {
+      String? value = await storage.read(key: "authtoken");
+      var response=await http.post(Uri.parse(endPoint+"/api/user/details"),
+          body:{
+            "token":value
+          });
+          var res=jsonDecode(response.body) as Map<String,dynamic>;
+          print(res['message']['amount']);
+    } catch (e) {
+      
+      return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              e.toString(), "Please contact admin to resolve", pink, Icons.close));
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    userDetails();
+  }
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width * 0.01;
     double _height = MediaQuery.of(context).size.height * 0.01;
