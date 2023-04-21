@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splitify/widgets/glassmorphic_container.dart';
+import 'package:splitify/ui/widgets/glassmorphic_container.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../utils/colors.dart';
@@ -17,8 +17,10 @@ class PieChart extends StatefulWidget {
 class _PieChartState extends State<PieChart> {
   @override
   Widget build(BuildContext context) {
+    double _width = MediaQuery.of(context).size.width * 0.01;
+    double _height = MediaQuery.of(context).size.height * 0.01;
     return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
+      width: _width * 80,
       // padding: const EdgeInsets.all(20
       child: GlassMorphism(
         start: 0.25,
@@ -27,7 +29,7 @@ class _PieChartState extends State<PieChart> {
         child: Column(
           children: [
             SizedBox(
-              height: 15,
+              height: _width * 5,
             ),
             const Text(
               "Expense Summary:",
@@ -39,7 +41,7 @@ class _PieChartState extends State<PieChart> {
                 ? Column(
                     children: [
                       SizedBox(
-                        height: 15,
+                        height: _width * 5,
                       ),
                       Text(
                         "No expense made",
@@ -76,10 +78,11 @@ class _PieChartState extends State<PieChart> {
                     children: [
                       Container(
                         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        height: showIndex == data.index ? 50 : 30,
+                        height:
+                            showIndex == data.index ? _width * 12 : _width * 10,
                         decoration: BoxDecoration(
                           color: showIndex == data.index
-                              ? purple
+                              ? purple.withOpacity(0.3)
                               : primary.withOpacity(0),
                           borderRadius: BorderRadius.circular(7.5),
                         ),
@@ -106,9 +109,8 @@ class _PieChartState extends State<PieChart> {
                                 data.x,
                                 textScaleFactor: 1.2,
                                 style: TextStyle(
-                                  color: showIndex == data.index
-                                      ? secondary
-                                      : white,
+                                  color:
+                                      showIndex == data.index ? purple : white,
                                 ),
                               ),
                             ],

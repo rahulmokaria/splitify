@@ -13,6 +13,7 @@ Color blue = const Color(0xffa2efea);
 Color black = Color(0xFF000000).withOpacity(0.5);
 const Color white = Color(0xFFFFFFFF);
 Color orange = const Color(0xffffab7c);
+const Color red = Color(0xFFec5766);
 
 Map<int, Color> color = {
   50: const Color.fromRGBO(46, 113, 229, .1),
