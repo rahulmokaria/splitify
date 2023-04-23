@@ -22,6 +22,10 @@ class ExpenseTracker extends StatefulWidget {
 
 class _ExpenseTrackerState extends State<ExpenseTracker> {
   var _currentIndex = 0;
+  String userName = 'User';
+  double totBalance = 12230;
+  double totExpense = 2000;
+  double totIncome = 14230;
   String endPoint=dotenv.env["URL"].toString();
   final storage = new FlutterSecureStorage();
   
@@ -35,6 +39,18 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
           });
           var res=jsonDecode(response.body) as Map<String,dynamic>;
           print(res['message']['amount']);
+          if(res['flag']){
+            setState(() {
+            userName=res['message']['name'];
+            totBalance=res['message']['amount'].toDouble();
+            totExpense=res['message']['expense'].toDouble();
+            totIncome=res['message']['income'].toDouble();
+            });
+          }
+          else{
+            return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              res['message'], "Please contact admin to resolve", pink, Icons.close));
+          }
     } catch (e) {
       
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
@@ -78,7 +94,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Hello, User',
+                    'Hello, ' + userName,
                     style: TextStyle(color: white),
                     textScaleFactor: 1.5,
                   ),
@@ -125,7 +141,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                                 style: TextStyle(color: white.withOpacity(0.5)),
                               ),
                               Text(
-                                '₹ 12230',
+                                totBalance.toString(),
                                 textScaleFactor: 1.5,
                                 style: TextStyle(color: white),
                               ),
@@ -136,20 +152,51 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                             textScaleFactor: 1.5,
                             style: TextStyle(color: white),
                           ),
-                          Column(
-                            children: [
-                              Text(
-                                'Valid Thru',
-                                textScaleFactor: 1.2,
-                                style: TextStyle(color: white.withOpacity(0.5)),
+                          Container(
+                              width: _width * 50,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Flexible(flex: 1, child: Container()),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        'Tot Inc',
+                                        textScaleFactor: 0.9,
+                                        style: TextStyle(
+                                            color: white.withOpacity(0.5)),
+                                      ),
+                                      Text(
+                                        totIncome.toString(),
+                                        textScaleFactor: 1.2,
+                                        style: TextStyle(color: white),
+                                      )
+                                    ],
+                                  ),
+                                  Flexible(flex: 1, child: Container()),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        'Tot Exp',
+                                        textScaleFactor: 0.9,
+                                        style: TextStyle(
+                                            color: white.withOpacity(0.5)),
+                                      ),
+                                      SizedBox(
+                                        width: _width * 5,
+                                      ),
+                                      Text(
+                                        totExpense.toString(),
+                                        textScaleFactor: 1.2,
+                                        style: TextStyle(color: white),
+                                      )
+                                    ],
+                                  ),
+                                  // Flexible(flex: 1, child: Container()),
+                                ],
                               ),
-                              Text(
-                                '01-31 Mar',
-                                textScaleFactor: 1.2,
-                                style: TextStyle(color: white),
-                              )
-                            ],
-                          ),
+                            ),
                         ],
                       ),
                       SizedBox(
@@ -169,12 +216,12 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                           children: [
                             Image(
                               image: AssetImage(
-                                'chip2.png',
+                                'assets/chip2.png',
                               ),
                               width: _width * 10,
                             ),
                             Image.asset(
-                              'chip3.png',
+                              'assets/chip3.png',
                               width: _width * 10,
                             )
                           ],
@@ -262,25 +309,34 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                 height: _width * 5,
               ),
               //all transactions
-              Container(
+               Container(
                 width: _width * 80,
                 child: GlassMorphism(
                   borderRadius: 20,
                   end: 0,
                   start: 0.25,
-                  child: Column(
-                    children: [
-                      Container(
-                        height: _width * 10,
-                        child: Center(
-                            child: Text(
-                          'All Transactions',
-                          textScaleFactor: 1.2,
-                          style: TextStyle(color: white),
-                        )),
-                      ),
-                      Text('Show More >>>'),
-                    ],
+                  child: InkWell(
+                    // onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    //     builder: (_) => const TransactionPage())),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: _width * 3,
+                        ),
+                        Container(
+                          height: _width * 10,
+                          child: Center(
+                              child: Text(
+                            'Recent Transactions',
+                            textScaleFactor: 1.2,
+                            style: TextStyle(color: white),
+                          )),
+                        ),
+                        SizedBox(
+                          height: _width * 3,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../utils/colors.dart';
 import '../../widgets/text_field_ui.dart';
-
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import '../../widgets/show_snackbar.dart';
 class CreateNewExpense extends StatefulWidget {
   bool isExpense;
   CreateNewExpense({super.key, required this.isExpense});
@@ -16,7 +20,7 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
   String? cat = "";
   String? remark = "";
   DateTime date = DateTime.now();
-  double? balance = 0;
+  
   final TextEditingController _remarkTextController = TextEditingController();
 
   var dropdownValue = 'Food';
@@ -41,6 +45,9 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
     'Retire pensions',
     'Other Incomes',
   ];
+  
+    String endPoint=dotenv.env["URL"].toString();
+  final storage = new FlutterSecureStorage();  
 
   var categories;
 
@@ -75,7 +82,7 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
     if (picked != null && picked != date) {
       setState(() {
         date = picked;
-        print(date);
+        print(date.runtimeType);
       });
     }
   }
@@ -106,6 +113,44 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
         return "November";
       case 12:
         return "December";
+    }
+  }
+
+  postdata() async{
+    try {
+      String transactionType="";
+      if(widget.isExpense){
+        cat="Food";
+        transactionType="Expense";
+      }
+      else{
+        cat="Salary";
+        transactionType="Income";
+      }
+      String? value = await storage.read(key: "authtoken");
+      date = DateTime.parse(date.toString());
+      var formattedDate = "${date.day}-${date.month}-${date.year}";
+      var response=await http.post(Uri.parse(endPoint+"/api/user/addtransaction"),
+          body:{
+            "token":value,
+            "transactiontype":transactionType,
+            "addamount":_amountTextController.text,
+            "description":_remarkTextController.text,
+            "category":cat,
+            "date":formattedDate
+          });
+          var res=jsonDecode(response.body) as Map<String,dynamic>;
+          if(res['flag']){
+            return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              res['message'], "Keep Adding 😀😀", green, Icons.celebration));
+          }
+          else{
+            return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              res['message'], "Please contact admin to resolve", pink, Icons.close));
+          }
+    } catch (e) {
+      return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              e.toString(), "Please contact admin to resolve", pink, Icons.close));
     }
   }
 
@@ -174,10 +219,13 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
+                        print(newValue);
                         setState(() {
                           dropdownValue = newValue!;
-                          cat = dropdownValue;
+                          cat = newValue;
                         });
+                        
+                        print(cat);
                       },
                       icon: const Icon(Icons.keyboard_arrow_down),
                       style: TextStyle(
@@ -304,7 +352,7 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                     BoxDecoration(borderRadius: BorderRadius.circular(90)),
                 child: ElevatedButton(
                   // onPressed: () => AddExpense(),
-                  onPressed: () {},
+                  onPressed: () {postdata();},
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.resolveWith((states) {

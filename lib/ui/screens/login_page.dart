@@ -65,7 +65,6 @@ class _LoginPageState extends State<LoginPage> {
           else{
            await storage.write(key: "authtoken", value: res['message']);
            String? value = await storage.read(key: "authtoken");
-           print(value);
            return gotoHome();
           }
       }
