@@ -120,16 +120,14 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
     try {
       String transactionType="";
       if(widget.isExpense){
-        cat="Food";
         transactionType="Expense";
       }
       else{
-        cat="Salary";
         transactionType="Income";
       }
       String? value = await storage.read(key: "authtoken");
       date = DateTime.parse(date.toString());
-      var formattedDate = "${date.day}-${date.month}-${date.year}";
+      var formattedDate = "${date.day}/${date.month}/${date.year}";
       var response=await http.post(Uri.parse(endPoint+"/api/user/addtransaction"),
           body:{
             "token":value,
@@ -153,13 +151,18 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
               e.toString(), "Please contact admin to resolve", pink, Icons.close));
     }
   }
-
+@override
+void initState() {
+    // TODO: implement initState
+    super.initState();
+    dropdownValue = widget.isExpense ? 'Food' : 'Salary';
+  }
   @override
   Widget build(BuildContext context) {
     var _width = MediaQuery.of(context).size.width / 100;
     var _height = MediaQuery.of(context).size.height / 100;
     categories = widget.isExpense ? categoriesExpense : categoriesIncome;
-    dropdownValue = widget.isExpense ? 'Food' : 'Salary';
+    
     return Scaffold(
       backgroundColor: secondary,
       appBar: AppBar(
