@@ -44,7 +44,10 @@ class _SignUpPageState extends State<SignUpPage> {
     setState(() {
       _isLoading = true;
     });
-
+    void gotoLogin() {
+    Navigator.of(context)
+    .pushReplacement(MaterialPageRoute(builder: (_) => const LoginPage()));
+    }
     try {
         var email=_emailTextController.text;
         var name=_nameTextController.text;
@@ -69,7 +72,9 @@ class _SignUpPageState extends State<SignUpPage> {
               res['message'], res['message'], pink, Icons.close));
           }
           else{
-            
+            ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              "Successfully registered" , "You can login now", green, Icons.celebration));
+            return gotoLogin();
           }
         }
         else{
@@ -85,7 +90,9 @@ class _SignUpPageState extends State<SignUpPage> {
               res['message'], res['message'], pink, Icons.close));
           }
           else{
-            
+            ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              "Successfully registered" , "You can login now", green, Icons.celebration));
+             return gotoLogin();
           }
         }
         

@@ -4,13 +4,15 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:splitify/ui/screens/customer/transaction_page.dart';
-import 'package:splitify/ui/utils/colors.dart';
-
+import '../../utils/colors.dart';
 import '../../widgets/glassmorphic_container.dart';
 import '../../widgets/pie_chart.dart';
 import 'new_expense.dart';
-
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import '../../widgets/show_snackbar.dart';
 class ExpenseTracker extends StatefulWidget {
   const ExpenseTracker({super.key});
 
@@ -24,6 +26,42 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
   double totBalance = 12230;
   double totExpense = 2000;
   double totIncome = 14230;
+  String endPoint=dotenv.env["URL"].toString();
+  final storage = new FlutterSecureStorage();
+  
+  @override
+  userDetails() async{
+    try {
+      String? value = await storage.read(key: "authtoken");
+      var response=await http.post(Uri.parse(endPoint+"/api/user/details"),
+          body:{
+            "token":value
+          });
+          var res=jsonDecode(response.body) as Map<String,dynamic>;
+          print(res['message']['amount']);
+          if(res['flag']){
+            setState(() {
+            userName=res['message']['name'];
+            totBalance=res['message']['amount'].toDouble();
+            totExpense=res['message']['expense'].toDouble();
+            totIncome=res['message']['income'].toDouble();
+            });
+          }
+          else{
+            return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              res['message'], "Please contact admin to resolve", pink, Icons.close));
+          }
+    } catch (e) {
+      
+      return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              e.toString(), "Please contact admin to resolve", pink, Icons.close));
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    userDetails();
+  }
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width * 0.01;
@@ -92,40 +130,30 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Container(
-                        width: _width * 50,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  "Your Balance",
-                                  textScaleFactor: 1.2,
-                                  style:
-                                      TextStyle(color: white.withOpacity(0.5)),
-                                ),
-                                Text(
-                                  '₹ ' + totBalance.toString(),
-                                  textScaleFactor: 1.5,
-                                  style: TextStyle(color: white),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              width: _width * 50,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '**** **** **** 5463',
-                                    textScaleFactor: 1.5,
-                                    style: TextStyle(color: white),
-                                  ),
-                                ],
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                "Your Balance",
+                                textScaleFactor: 1.2,
+                                style: TextStyle(color: white.withOpacity(0.5)),
                               ),
-                            ),
-                            Container(
+                              Text(
+                                totBalance.toString(),
+                                textScaleFactor: 1.5,
+                                style: TextStyle(color: white),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            '**** **** **** 5463',
+                            textScaleFactor: 1.5,
+                            style: TextStyle(color: white),
+                          ),
+                          Container(
                               width: _width * 50,
                               child: Row(
                                 mainAxisAlignment:
@@ -170,8 +198,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                                 ],
                               ),
                             ),
-                          ],
-                        ),
+                        ],
                       ),
                       SizedBox(
                         width: _width * 5,
@@ -283,7 +310,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                 height: _width * 5,
               ),
               //all transactions
-              Container(
+               Container(
                 width: _width * 80,
                 child: GlassMorphism(
                   borderRadius: 20,

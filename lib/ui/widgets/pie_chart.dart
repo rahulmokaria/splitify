@@ -3,7 +3,11 @@ import 'package:splitify/ui/widgets/glassmorphic_container.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../utils/colors.dart';
-
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import './show_snackbar.dart';
 var showIndex = 0;
 Color highlightColor = secondaryLight;
 
@@ -15,6 +19,11 @@ class PieChart extends StatefulWidget {
 }
 
 class _PieChartState extends State<PieChart> {
+  @override
+  void initState() {
+    super.initState();
+    getpiechart();
+  }
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width * 0.01;
@@ -197,6 +206,28 @@ final List<ChartData> chartData = [
   ),
 ];
 
+
+getpiechart() async{
+try {
+  String endPoint=dotenv.env["URL"].toString();
+  final storage = new FlutterSecureStorage();
+  String? value = await storage.read(key: "authtoken");
+  var response=await http.post(Uri.parse(endPoint+"/api/user/getpiechart"),
+          body:{
+            "token":value
+          });
+          var res=jsonDecode(response.body) as Map<String,dynamic>;
+          double length=res['message'].length;
+          var intialcatValue=["Food","Shopping","Medicines","Transport","Utilities","Education","Entertainment","Clothing","Rent","Others"];
+          for(int i=0;i<length;i++){
+            catValue[intialcatValue[i]]=res['meessage'][i].value;
+          }
+} catch (e) {
+  print(e);
+}
+}
+
+  
 var catValue = {
   'Food': 20,
   'Shopping': 30,
