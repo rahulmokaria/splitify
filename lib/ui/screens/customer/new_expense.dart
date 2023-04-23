@@ -23,7 +23,7 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
   
   final TextEditingController _remarkTextController = TextEditingController();
 
-  var dropdownValue = 'Food';
+  String dropdownValue = 'Food';
   var categoriesExpense = [
     "Food",
     'Shopping',
@@ -155,11 +155,18 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    dropdownValue = widget.isExpense ? 'Food' : 'Salary';
+  }
+
+  @override
   Widget build(BuildContext context) {
     var _width = MediaQuery.of(context).size.width / 100;
     var _height = MediaQuery.of(context).size.height / 100;
     categories = widget.isExpense ? categoriesExpense : categoriesIncome;
-    dropdownValue = widget.isExpense ? 'Food' : 'Salary';
+
     return Scaffold(
       backgroundColor: secondary,
       appBar: AppBar(
@@ -201,8 +208,8 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                       ),
                       textScaleFactor: 1.2,
                     ),
-                    const SizedBox(
-                      width: 50,
+                    SizedBox(
+                      width: _width * 10,
                     ),
                     DropdownButton(
                       value: dropdownValue,
@@ -219,12 +226,10 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
-                        print(newValue);
-                        setState(() {
-                          dropdownValue = newValue!;
-                          cat = newValue;
-                        });
-                        
+                        dropdownValue = newValue!;
+                        cat = dropdownValue;
+                        setState(() {});
+
                         print(cat);
                       },
                       icon: const Icon(Icons.keyboard_arrow_down),

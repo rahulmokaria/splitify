@@ -114,7 +114,8 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
               // Flexible(
               //   flex: 1,
               //   child: Container(),
-              // ),
+              // ),klj
+
               SizedBox(
                 height: _width * 5,
               ),
@@ -316,8 +317,8 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                   end: 0,
                   start: 0.25,
                   child: InkWell(
-                    // onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    //     builder: (_) => const TransactionPage())),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const TransactionPage())),
                     child: Column(
                       children: [
                         SizedBox(

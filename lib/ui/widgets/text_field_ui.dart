@@ -30,5 +30,14 @@ TextFormField textFieldUi(
         borderSide: const BorderSide(width: 0, style: BorderStyle.none),
       ),
     ),
+    validator: (value) {
+      if (value!.isEmpty) {
+        print('empty');
+        return "Field cannot be empty";
+      } else {
+        print('pappu pass');
+        return null;
+      }
+    },
   );
 }
