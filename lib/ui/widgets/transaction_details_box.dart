@@ -107,10 +107,7 @@ class TransactionBox extends StatelessWidget {
                         onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
                                 builder: (_) => EditTransactionCard(
-                                    date: transaction.transactionDate,
-                                    amount: transaction.amount,
-                                    category: transaction.category,
-                                    remark: transaction.remark))),
+                            transaction: transaction,))),
                         child: Icon(
                           Icons.edit,
                           color: white,
@@ -138,7 +135,7 @@ class TransactionBox extends StatelessWidget {
                     child: Center(
                       child: Text(
                         (transaction.amount >= 0)
-                            ? "+" + transaction.amount.toString()
+                            ? "+${transaction.amount}"
                             : transaction.amount.toString(),
                         textScaleFactor: 1.2,
                         style: const TextStyle(

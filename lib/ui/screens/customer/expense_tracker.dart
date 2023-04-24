@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:splitify/ui/screens/customer/transaction_page.dart';
 import '../../utils/colors.dart';
 import '../../widgets/glassmorphic_container.dart';
 import '../../widgets/pie_chart.dart';
@@ -38,7 +39,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
             "token":value
           });
           var res=jsonDecode(response.body) as Map<String,dynamic>;
-          print(res['message']['amount']);
+          // print(res['message']['amount']);
           if(res['flag']){
             setState(() {
             userName=res['message']['name'];

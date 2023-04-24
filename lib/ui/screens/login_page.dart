@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
           var res=jsonDecode(response.body) as Map<String,dynamic>;
           if(!res['flag']){
             return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], res['message'], pink, Icons.close));
+              res['message'], res['message'], red, Icons.close));
           }
           else{
            await storage.write(key: "authtoken", value: res['message']);

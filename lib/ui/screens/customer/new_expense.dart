@@ -144,7 +144,7 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
           }
           else{
             return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], "Please contact admin to resolve", pink, Icons.close));
+              "All fields are required", "Please contact admin to resolve", pink, Icons.close));
           }
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
@@ -164,7 +164,7 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
     var _width = MediaQuery.of(context).size.width / 100;
     var _height = MediaQuery.of(context).size.height / 100;
     categories = widget.isExpense ? categoriesExpense : categoriesIncome;
-    dropdownValue = widget.isExpense ? 'Food' : 'Salary';
+    
     return Scaffold(
       backgroundColor: secondary,
       appBar: AppBar(
