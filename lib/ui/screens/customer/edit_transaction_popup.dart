@@ -138,12 +138,12 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
   }
 
   contentBox(context) {
-    double _width = MediaQuery.of(context).size.width * 0.01;
-    double _height = MediaQuery.of(context).size.height * 0.01;
+    double width = MediaQuery.of(context).size.width * 0.01;
+    double height = MediaQuery.of(context).size.height * 0.01;
     return Stack(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.all(_width * 5),
+          padding: EdgeInsets.all(width * 5),
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             color: secondary,
@@ -160,9 +160,9 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                   color: purple,
                 ),
               ),
-              SizedBox(height: _width * 5),
+              SizedBox(height: width * 5),
               Container(
-                // padding: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                // padding: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Amount',
                     icon: Icons.wallet,
@@ -171,13 +171,13 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                     controller: _amountController,
                     inputType: TextInputType.number),
               ),
-              SizedBox(height: _width * 5),
+              SizedBox(height: width * 5),
               Container(
                 decoration: BoxDecoration(
                   color: white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(30),
                 ),
-                padding: EdgeInsets.fromLTRB(_width * 4, 5, _width * 4, 5),
+                padding: EdgeInsets.fromLTRB(width * 4, 5, width * 4, 5),
                 child: Row(
                   children: [
                     Text(
@@ -188,7 +188,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       textScaleFactor: 1.2,
                     ),
                     SizedBox(
-                      width: _width * 3,
+                      width: width * 3,
                     ),
                     DropdownButton(
                       value: dropdownValue,
@@ -230,9 +230,9 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                   ],
                 ),
               ),
-              SizedBox(height: _width * 5),
+              SizedBox(height: width * 5),
               Container(
-                // margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                // margin: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Description',
                     icon: Icons.menu,
@@ -241,7 +241,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                     controller: _remarkController,
                     inputType: TextInputType.streetAddress),
               ),
-              SizedBox(height: _width * 5),
+              SizedBox(height: width * 5),
               Container(
                 decoration: BoxDecoration(
                   color: white.withOpacity(0.2),
@@ -272,7 +272,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                   ),
                 ),
               ),
-              SizedBox(height: _width * 5),
+              SizedBox(height: width * 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
@@ -289,7 +289,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       ),
                     ),
                   ),
-                  SizedBox(width: _width * 2.5),
+                  SizedBox(width: width * 2.5),
                   ElevatedButton(
                     onPressed: () {
                       //TODO: implement edit transaction functionality
@@ -304,7 +304,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       ),
                     ),
                   ),
-                  SizedBox(width: _width * 2.5),
+                  SizedBox(width: width * 2.5),
                   ElevatedButton(
                     onPressed: () {
                       //TODO: implement edit transaction functionality

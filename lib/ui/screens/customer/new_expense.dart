@@ -146,11 +146,11 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
           }
           else{
             return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], "Please contact admin to resolve", pink, Icons.close));
+              res['message'], "Please contact admin to resolve", red, Icons.close));
           }
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              e.toString(), "Please contact admin to resolve", pink, Icons.close));
+              e.toString(), "Please contact admin to resolve", red, Icons.close));
     }
   }
 

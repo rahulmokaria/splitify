@@ -56,7 +56,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
         if(password!=confirmpassword){
           return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Password not matching", "Password and confirm password is not matching", pink, Icons.close));
+              "Password not matching", "Password and confirm password is not matching", red, Icons.close));
         }
         String endPoint=dotenv.env["URL"].toString();
         if(isShopkeeper){
@@ -69,7 +69,7 @@ class _SignUpPageState extends State<SignUpPage> {
           var res=jsonDecode(response.body) as Map<String,dynamic>;
           if(!res['flag']){
             return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], res['message'], pink, Icons.close));
+              res['message'], res['message'], red, Icons.close));
           }
           else{
             ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
@@ -87,7 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
           var res=jsonDecode(response.body) as Map<String,dynamic>;
           if(!res['flag']){
             return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], res['message'], pink, Icons.close));
+              res['message'], res['message'], red, Icons.close));
           }
           else{
             ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
@@ -98,7 +98,7 @@ class _SignUpPageState extends State<SignUpPage> {
         
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Error at registersation", "Please contact admin to resolve", pink, Icons.close));
+              "Error at registersation", "Please contact admin to resolve", red, Icons.close));
     }
    
 

@@ -2,6 +2,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import '../../utils/colors.dart';
@@ -13,6 +14,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../../widgets/show_snackbar.dart';
+import 'transaction_page.dart';
+
 class ExpenseTracker extends StatefulWidget {
   const ExpenseTracker({super.key});
 
@@ -26,42 +29,43 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
   double totBalance = 12230;
   double totExpense = 2000;
   double totIncome = 14230;
-  String endPoint=dotenv.env["URL"].toString();
+  String endPoint = dotenv.env["URL"].toString();
   final storage = new FlutterSecureStorage();
-  
+
   @override
-  userDetails() async{
+  userDetails() async {
     try {
       String? value = await storage.read(key: "authtoken");
-      var response=await http.post(Uri.parse(endPoint+"/api/user/details"),
-          body:{
-            "token":value
-          });
-          var res=jsonDecode(response.body) as Map<String,dynamic>;
-          print(res['message']['amount']);
-          if(res['flag']){
-            setState(() {
-            userName=res['message']['name'];
-            totBalance=res['message']['amount'].toDouble();
-            totExpense=res['message']['expense'].toDouble();
-            totIncome=res['message']['income'].toDouble();
-            });
-          }
-          else{
-            return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], "Please contact admin to resolve", pink, Icons.close));
-          }
+      var response = await http.post(Uri.parse(endPoint + "/api/user/details"),
+          body: {"token": value});
+      var res = jsonDecode(response.body) as Map<String, dynamic>;
+      print(res['message']['amount']);
+      if (res['flag']) {
+        setState(() {
+          userName = res['message']['name'];
+          totBalance = res['message']['amount'].toDouble();
+          totExpense = res['message']['expense'].toDouble();
+          totIncome = res['message']['income'].toDouble();
+        });
+      } else {
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            res['message'],
+            "Please contact admin to resolve",
+            red,
+            Icons.close));
+      }
     } catch (e) {
-      
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              e.toString(), "Please contact admin to resolve", pink, Icons.close));
+          e.toString(), "Please contact admin to resolve", red, Icons.close));
     }
   }
+
   @override
   void initState() {
     super.initState();
     userDetails();
   }
+
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width * 0.01;
@@ -154,50 +158,49 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                             style: TextStyle(color: white),
                           ),
                           Container(
-                              width: _width * 50,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // Flexible(flex: 1, child: Container()),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        'Tot Inc',
-                                        textScaleFactor: 0.9,
-                                        style: TextStyle(
-                                            color: white.withOpacity(0.5)),
-                                      ),
-                                      Text(
-                                        totIncome.toString(),
-                                        textScaleFactor: 1.2,
-                                        style: TextStyle(color: white),
-                                      )
-                                    ],
-                                  ),
-                                  Flexible(flex: 1, child: Container()),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        'Tot Exp',
-                                        textScaleFactor: 0.9,
-                                        style: TextStyle(
-                                            color: white.withOpacity(0.5)),
-                                      ),
-                                      SizedBox(
-                                        width: _width * 5,
-                                      ),
-                                      Text(
-                                        totExpense.toString(),
-                                        textScaleFactor: 1.2,
-                                        style: TextStyle(color: white),
-                                      )
-                                    ],
-                                  ),
-                                  // Flexible(flex: 1, child: Container()),
-                                ],
-                              ),
+                            width: _width * 50,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Flexible(flex: 1, child: Container()),
+                                Column(
+                                  children: [
+                                    Text(
+                                      'Tot Inc',
+                                      textScaleFactor: 0.9,
+                                      style: TextStyle(
+                                          color: white.withOpacity(0.5)),
+                                    ),
+                                    Text(
+                                      totIncome.toString(),
+                                      textScaleFactor: 1.2,
+                                      style: TextStyle(color: white),
+                                    )
+                                  ],
+                                ),
+                                Flexible(flex: 1, child: Container()),
+                                Column(
+                                  children: [
+                                    Text(
+                                      'Tot Exp',
+                                      textScaleFactor: 0.9,
+                                      style: TextStyle(
+                                          color: white.withOpacity(0.5)),
+                                    ),
+                                    SizedBox(
+                                      width: _width * 5,
+                                    ),
+                                    Text(
+                                      totExpense.toString(),
+                                      textScaleFactor: 1.2,
+                                      style: TextStyle(color: white),
+                                    )
+                                  ],
+                                ),
+                                // Flexible(flex: 1, child: Container()),
+                              ],
                             ),
+                          ),
                         ],
                       ),
                       SizedBox(
@@ -215,12 +218,16 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Image(
-                              image: AssetImage(
-                                'assets/chip2.png',
-                              ),
-                              width: _width * 10,
+                            const Icon(
+                              FontAwesomeIcons.ccAmazonPay,
+                              color: white,
                             ),
+                            // Image(
+                            //   image: AssetImage(
+                            //     'assets/chip2.png',
+                            //   ),
+                            //   width: _width * 10,
+                            // ),
                             Image.asset(
                               'assets/chip3.png',
                               width: _width * 10,
@@ -310,7 +317,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                 height: _width * 5,
               ),
               //all transactions
-               Container(
+              Container(
                 width: _width * 80,
                 child: GlassMorphism(
                   borderRadius: 20,
