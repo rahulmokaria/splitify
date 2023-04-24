@@ -71,6 +71,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width * 0.01;
     double _height = MediaQuery.of(context).size.height * 0.01;
+    
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(

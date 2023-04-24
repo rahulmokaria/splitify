@@ -4,13 +4,12 @@ import 'package:splitify/ui/models/transaction.dart';
 import '../../utils/colors.dart';
 import '../../widgets/text_field_ui.dart';
 
-
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../../widgets/show_snackbar.dart';
-
+import 'transaction_page.dart';
 
 class EditTransactionCard extends StatefulWidget {
   UserTransaction transaction;
@@ -26,7 +25,6 @@ class EditTransactionCard extends StatefulWidget {
 
 class _EditTransactionCardState extends State<EditTransactionCard> {
   TextEditingController _amountController = TextEditingController();
-  TextEditingController _categoryController = TextEditingController();
   TextEditingController _remarkController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
@@ -121,38 +119,81 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
   void initState() {
     super.initState();
     _amountController.text = widget.transaction.amount.toString();
-    _categoryController.text = widget.transaction.category;
+
     _remarkController.text = widget.transaction.remark;
     dropdownValue = widget.transaction.category;
-    categories = widget.transaction.amount < 0 ? categoriesExpense : categoriesIncome;
+    categories =
+        widget.transaction.amount < 0 ? categoriesExpense : categoriesIncome;
   }
-    editdata()async {
-      String endPoint=dotenv.env["URL"].toString();
-      final storage = new FlutterSecureStorage();
-      try {
-        String? value = await storage.read(key: "authtoken");
-       var date= widget.transaction.transactionDate;
-       date = DateTime.parse(date.toString());
-      var formattedDate = "${date.day}/${date.month}/${date.year}";
-      var response=await http.post(Uri.parse(endPoint+"/api/user/edittransaction"),
-          body:{
-            "token":value,
-            "id":widget.transaction.transactionId,
-            "addamount":_amountController.text,
-            "description":_remarkController.text,
-            "category":_categoryController.text,
-            "date":formattedDate
-          });
-          var res=jsonDecode(response.body) as Map<String,dynamic>;
-          if(res['flag']){
-            return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], "Please contact admin to resolve", pink, Icons.close));
-          }
-      } catch (e) {
+  deletetransaction()async{
+    String endPoint = dotenv.env["URL"].toString();
+    final storage = new FlutterSecureStorage();
+    try {
+      String? value = await storage.read(key: "authtoken");
+      var response = await http.post(Uri.parse(endPoint + "/api/user/deletetransaction"), body: {
+        "token": value,
+        "id": widget.transaction.transactionId,
+      });
+      var res = jsonDecode(response.body) as Map<String, dynamic>;
+      if (res['flag']) {
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              e.toString(), "Please contact admin to resolve", pink, Icons.close));
+            res['message'],
+            "Keep Enjoying",
+            green,
+            Icons.close));
       }
+      else{
+         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            res['message'],
+            "Please contact admin to resolve",
+            pink,
+            Icons.close));
+      }
+    } catch (e) {
+      return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          e.toString(), "Please contact admin to resolve", pink, Icons.close));
     }
+   }
+
+
+  editdata() async {
+    String endPoint = dotenv.env["URL"].toString();
+    final storage = new FlutterSecureStorage();
+    try {
+      String? value = await storage.read(key: "authtoken");
+      var date = widget.transaction.transactionDate;
+      date = DateTime.parse(date.toString());
+      var formattedDate = "${date.day}/${date.month}/${date.year}";
+      var response = await http
+          .post(Uri.parse(endPoint + "/api/user/edittransaction"), body: {
+        "token": value,
+        "id": widget.transaction.transactionId,
+        "addamount": _amountController.text,
+        "description": _remarkController.text,
+        "category": dropdownValue,
+        "date": formattedDate
+      });
+      var res = jsonDecode(response.body) as Map<String, dynamic>;
+      if (res['flag']) {
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            res['message'],
+            "Keep Enjoying",
+            green,
+            Icons.close));
+      }
+      else{
+         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            res['message'],
+            "Please contact admin to resolve",
+            pink,
+            Icons.close));
+      }
+    } catch (e) {
+      return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          e.toString(), "Please contact admin to resolve", pink, Icons.close));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -247,7 +288,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       onChanged: (String? newValue) {
                         dropdownValue = newValue!;
 
-                        setState(() {_categoryController=dropdownValue as TextEditingController;});
+                        setState(() {});
                         print(dropdownValue);
                       },
                       icon: const Icon(Icons.keyboard_arrow_down),
@@ -322,7 +363,12 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                     onPressed: () {
                       //TODO: implement edit transaction functionality
                       editdata();
-                      Navigator.of(context).pop();
+                      // Navigator.of(context).popUntil(( context, MaterialPageRout));
+                      if(Navigator.canPop(context)) {
+                        // Navigator.canPop return true if can pop
+                        Navigator.pop(context);
+                      }
+                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>TransactionPage()));
                     },
                     child: Text('Save'),
                     style: ElevatedButton.styleFrom(
@@ -337,6 +383,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                   ElevatedButton(
                     onPressed: () {
                       //TODO: implement edit transaction functionality
+                      deletetransaction();
                       Navigator.of(context).pop();
                     },
                     child: Text('Delete'),

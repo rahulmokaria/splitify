@@ -22,8 +22,8 @@ class _UserProfileState extends State<UserProfile> {
   void initState() {
     super.initState();
   }
-
-  Avatar _avatar = DiceBearBuilder(sprite: DiceBearSprite.funEmoji).build();
+  String username = "Rahul Mokaria";
+  Avatar _avatar = DiceBearBuilder(sprite: DiceBearSprite.initials, seed: "Rahul" ).build();
   String urlimg = "";
 
   @override

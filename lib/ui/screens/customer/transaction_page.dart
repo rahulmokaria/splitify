@@ -31,8 +31,7 @@ class _TransactionPageState extends State<TransactionPage> {
   }
 
   getall() async {
-    // TODO: implement initState
-    super.initState();
+    
     try {
       String endPoint = dotenv.env["URL"].toString();
       final storage = new FlutterSecureStorage();
@@ -82,8 +81,9 @@ class _TransactionPageState extends State<TransactionPage> {
           "Please contact admin to resolve", e.toString(), pink, Icons.close));
     }
   }
-
-  @override
+   
+   
+     @override
   void initState() {
     // TODO: implement initState
 

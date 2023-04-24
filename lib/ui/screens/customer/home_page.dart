@@ -8,7 +8,7 @@ import 'package:splitify/ui/screens/customer/expense_tracker.dart';
 
 
 import '../../utils/colors.dart';
-import '../../widgets/bg.dart';
+// import '../../widgets/bg.dart';
 import 'user_profile_page.dart';
 
 class CusHomePage extends StatefulWidget {
