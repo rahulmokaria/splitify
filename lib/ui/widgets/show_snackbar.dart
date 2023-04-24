@@ -28,6 +28,7 @@ showCustomSnackBar(String message, String e, Color msgColor, IconData msgIcon) {
                       message,
                       style: const TextStyle(fontSize: 24),
                       maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       e,

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:splitify/ui/screens/customer/expense_tracker.dart';
 import 'package:splitify/ui/screens/customer/home_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'package:splitify/ui/screens/login_page.dart';
-import 'package:splitify/ui/screens/sign_up_page.dart';
+import 'ui/screens/login_page.dart';
 
-void main() async{
+void main() async {
   await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
@@ -21,13 +19,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-
-
         primarySwatch: Colors.purple,
-
       ),
-      // home: const CusHomePage(),
-      home: const LoginPage(),
+      home: const CusHomePage(),
+      // home: const LoginPage(),
     );
   }
 }
