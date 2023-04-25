@@ -210,7 +210,7 @@ final List<ChartData> chartData = [
 getpiechart() async{
 try {
   String endPoint=dotenv.env["URL"].toString();
-  final storage = new FlutterSecureStorage();
+  const storage = FlutterSecureStorage();
   String? value = await storage.read(key: "authtoken");
   var response=await http.post(Uri.parse(endPoint+"/api/user/getpiechart"),
           body:{

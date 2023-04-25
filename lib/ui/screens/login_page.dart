@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
     try {
-      final storage = new FlutterSecureStorage();
+      const storage = FlutterSecureStorage();
       var email=_emailTextController.text;
       var password=_passwordTextController.text;
       String endPoint=dotenv.env["URL"].toString();
@@ -301,7 +301,7 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     "Don't have an account?",
                     style: TextStyle(
                       fontSize: 18,

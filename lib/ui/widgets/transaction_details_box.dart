@@ -40,16 +40,15 @@ class TransactionBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _width = MediaQuery.of(context).size.width / 100;
-    var _height = MediaQuery.of(context).size.height / 100;
-    return Container(
-      height: _width * 42,
+    var width = MediaQuery.of(context).size.width / 100;
+    return SizedBox(
+      height: width * 42,
       child: GlassMorphism(
         start: .25,
         end: 0,
         borderRadius: 20,
         child: Container(
-          padding: EdgeInsets.all(_width * 3),
+          padding: EdgeInsets.all(width * 3),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -111,7 +110,7 @@ class TransactionBox extends StatelessWidget {
                                     amount: transaction.amount,
                                     category: transaction.category,
                                     remark: transaction.remark))),
-                        child: Icon(
+                        child: const Icon(
                           Icons.edit,
                           color: white,
                         ),
@@ -125,11 +124,11 @@ class TransactionBox extends StatelessWidget {
                     ],
                   ),
                   SizedBox(
-                    width: _width * 3,
+                    width: width * 3,
                   ),
                   Container(
-                    width: _width * 20,
-                    height: _width * 20,
+                    width: width * 20,
+                    height: width * 20,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       shape: BoxShape.rectangle,
@@ -154,6 +153,6 @@ class TransactionBox extends StatelessWidget {
         ),
       ),
     );
-    ;
+    
   }
 }
