@@ -30,7 +30,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
   double totExpense = 2000;
   double totIncome = 14230;
   String endPoint = dotenv.env["URL"].toString();
-  final storage = new FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   @override
   userDetails() async {
@@ -99,14 +99,14 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Hello, ' + userName,
-                    style: TextStyle(color: white),
+                    style: const TextStyle(color: white),
                     textScaleFactor: 1.5,
                   ),
                 ),
               ),
               Container(
                 padding: EdgeInsets.only(left: _width * 10),
-                child: Align(
+                child: const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Here are your daily expenses",
@@ -148,11 +148,11 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                               Text(
                                 totBalance.toString(),
                                 textScaleFactor: 1.5,
-                                style: TextStyle(color: white),
+                                style: const TextStyle(color: white),
                               ),
                             ],
                           ),
-                          Text(
+                          const Text(
                             '**** **** **** 5463',
                             textScaleFactor: 1.5,
                             style: TextStyle(color: white),
@@ -174,7 +174,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                                     Text(
                                       totIncome.toString(),
                                       textScaleFactor: 1.2,
-                                      style: TextStyle(color: white),
+                                      style: const TextStyle(color: white),
                                     )
                                   ],
                                 ),
@@ -193,7 +193,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                                     Text(
                                       totExpense.toString(),
                                       textScaleFactor: 1.2,
-                                      style: TextStyle(color: white),
+                                      style: const TextStyle(color: white),
                                     )
                                   ],
                                 ),
@@ -209,7 +209,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                       Container(
                         width: _width * 23,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
+                          borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(20),
                             bottomRight: Radius.circular(20),
                           ),
@@ -260,7 +260,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                       child: Container(
                         height: _width * 15,
                         width: _width * 32,
-                        child: GlassMorphism(
+                        child: const GlassMorphism(
                           end: 0,
                           start: 0.25,
                           borderRadius: 20,
@@ -283,7 +283,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                       child: Container(
                         height: _width * 15,
                         width: _width * 32,
-                        child: GlassMorphism(
+                        child: const GlassMorphism(
                           end: 0,
                           start: 0.25,
                           borderRadius: 20,
@@ -333,7 +333,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                         ),
                         Container(
                           height: _width * 10,
-                          child: Center(
+                          child: const Center(
                               child: Text(
                             'Recent Transactions',
                             textScaleFactor: 1.2,
