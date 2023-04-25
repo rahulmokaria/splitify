@@ -47,7 +47,7 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
   ];
   
     String endPoint=dotenv.env["URL"].toString();
-  final storage = new FlutterSecureStorage();  
+  final storage = const FlutterSecureStorage();  
 
   var categories;
 
@@ -218,11 +218,11 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                       items: categories
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
+                          value: value,
                           child: Text(
                             value,
                             textScaleFactor: 1.2,
                           ),
-                          value: value,
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
