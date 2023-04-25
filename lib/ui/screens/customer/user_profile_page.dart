@@ -102,7 +102,7 @@ class _UserProfileState extends State<UserProfile> {
             padding: EdgeInsets.all(
               _width * 10,
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               // borderRadius: BorderRadius.only(
               //   topLeft: Radius.circular(_width * 10),
               //   topRight: Radius.circular(_width * 10),

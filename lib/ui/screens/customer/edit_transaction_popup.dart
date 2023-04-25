@@ -266,6 +266,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       items: categories
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
+                          value: value,
                           child: Flexible(
                             child: Text(value,
                                 textScaleFactor: 1,
@@ -275,7 +276,6 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis),
                           ),
-                          value: value,
                         );
 
                         //   Text(
@@ -349,7 +349,6 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('Cancel'),
                     style: ElevatedButton.styleFrom(
                       primary: white.withOpacity(0.2),
                       onPrimary: Colors.white,
@@ -357,6 +356,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
+                    child: const Text('Cancel'),
                   ),
                   SizedBox(width: width * 2.5),
                   ElevatedButton(
@@ -371,7 +371,6 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       // Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>TransactionPage()));
                        Navigator.of(context).pop();
                     },
-                    child: Text('Save'),
                     style: ElevatedButton.styleFrom(
                       primary: white.withOpacity(0.2),
                       onPrimary: Colors.white,
@@ -379,6 +378,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
+                    child: const Text('Save'),
                   ),
                   SizedBox(width: width * 2.5),
                   ElevatedButton(
@@ -387,7 +387,6 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       deletetransaction();
                       Navigator.of(context).pop();
                     },
-                    child: Text('Delete'),
                     style: ElevatedButton.styleFrom(
                       primary: white.withOpacity(0.2),
                       onPrimary: red,
@@ -395,6 +394,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
+                    child: const Text('Delete'),
                   ),
                 ],
               ),
