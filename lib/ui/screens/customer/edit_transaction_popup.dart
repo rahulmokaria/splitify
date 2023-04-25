@@ -364,11 +364,12 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       //TODO: implement edit transaction functionality
                       editdata();
                       // Navigator.of(context).popUntil(( context, MaterialPageRout));
-                      if(Navigator.canPop(context)) {
-                        // Navigator.canPop return true if can pop
-                        Navigator.pop(context);
-                      }
-                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>TransactionPage()));
+                      // if(Navigator.canPop(context)) {
+                      //   // Navigator.canPop return true if can pop
+                      //   Navigator.pop(context);
+                      // }
+                      // Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>TransactionPage()));
+                       Navigator.of(context).pop();
                     },
                     child: Text('Save'),
                     style: ElevatedButton.styleFrom(

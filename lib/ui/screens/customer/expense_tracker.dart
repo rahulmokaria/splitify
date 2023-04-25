@@ -40,7 +40,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
       var response = await http.post(Uri.parse(endPoint + "/api/user/details"),
           body: {"token": value});
       var res = jsonDecode(response.body) as Map<String, dynamic>;
-      // print(res['message']['amount']);
+      print(res['message']['amount']);
       if (res['flag']) {
         setState(() {
           userName = res['message']['name'];
@@ -71,7 +71,6 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width * 0.01;
     double _height = MediaQuery.of(context).size.height * 0.01;
-    
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
