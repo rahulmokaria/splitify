@@ -40,7 +40,7 @@ class _UserProfileState extends State<UserProfile> {
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.all(
-              _width * 10,
+              _width * 2,
             ),
             decoration: const BoxDecoration(
               // borderRadius: BorderRadius.only(
@@ -52,20 +52,91 @@ class _UserProfileState extends State<UserProfile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(_width * 5),
-                  child: _avatar.toImage(
-                    height: _width * 80,
-                    width: _width * 80,
-                    fit: BoxFit.fitWidth,
-                  ),
-                  // Image.network(
-                  //   urlimg,
-                  //   height: MediaQuery.of(context).size.width,
-                  //   width: MediaQuery.of(context).size.width,
-                  //   fit: BoxFit.cover,
-                  // ),
+                Stack(
+                  children: [
+                    Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(
+                                MediaQuery.of(context).size.width * 0.1),
+                            topRight: Radius.circular(
+                                MediaQuery.of(context).size.width * 0.1),
+                            // bottomLeft: Radius.circular(
+                            // MediaQuery.of(context).size.width * 0.1),
+                            // bottomRight: Radius.circular(
+                            // MediaQuery.of(context).size.width * 0.1),
+                          ),
+                          child: Image.asset(
+                            // widget.cUser.backCoverImg
+                            'assets/greenbg.jpg',
+                            height: _width * 50,
+                            width: _width * 100,
+                            fit: BoxFit.cover,
+                          ),
+                          // Image.network(
+                          // widget.cUser.backCoverImg
+                          // 'https://www.google.com/url?sa=i&url=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2Fgreen-pattern&psig=AOvVaw3AJls4ZmJ5xErylYVzwYPx&ust=1682516876441000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCPjhkfiVxf4CFQAAAAAdAAAAABAJ',
+                          // height: _width * 50,
+                          // width: _width * 100,
+                          // fit: BoxFit.cover,
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.width * 0.25,
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      top: MediaQuery.of(context).size.width * 0.3,
+                      left: MediaQuery.of(context).size.width * 0.05,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            MediaQuery.of(context).size.width * 0.25),
+                        child: Container(
+                          color: secondary,
+                          height: MediaQuery.of(context).size.width * 0.44,
+                          width: MediaQuery.of(context).size.width * 0.44,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: MediaQuery.of(context).size.width * 0.32,
+                      left: MediaQuery.of(context).size.width * 0.07,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            MediaQuery.of(context).size.width * 0.2),
+                        child: Container(
+                          color: secondary,
+                          height: MediaQuery.of(context).size.width * 0.4,
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: _avatar.toImage(
+                            // height: _width * 80,
+                            // width: _width * 80,
+                            fit: BoxFit.cover,
+                          ),
+                          //  Image.network(
+                          //   widget.friend.photoUrl,
+                          //   fit: BoxFit.cover,
+                          // ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(_width * 5),
+                //   child: _avatar.toImage(
+                //     height: _width * 80,
+                //     width: _width * 80,
+                //     fit: BoxFit.fitWidth,
+                //   ),
+                //   // Image.network(
+                //   //   urlimg,
+                //   //   height: MediaQuery.of(context).size.width,
+                //   //   width: MediaQuery.of(context).size.width,
+                //   //   fit: BoxFit.cover,
+                //   // ),
+                // ),
                 SizedBox(
                   height: _width * 10,
                 ),

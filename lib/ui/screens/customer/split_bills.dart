@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:splitify/ui/screens/customer/add_friend_page.dart';
 import 'package:splitify/ui/screens/customer/friend_details.dart';
 import 'package:splitify/ui/utils/colors.dart';
 
 import '../../widgets/glassmorphic_container.dart';
+import 'add_group_page.dart';
 import 'group_details.dart';
 
 class SplitBillsPage extends StatefulWidget {
@@ -189,7 +191,7 @@ class _SplitBillsPageState extends State<SplitBillsPage> {
                               filled: true,
                               fillColor: Colors.white.withOpacity(0.2),
                               prefixIcon: Icon(
-                                Icons.search,
+                                FontAwesomeIcons.magnifyingGlass,
                                 color: _searchFocus.hasFocus
                                     ? Colors.white
                                     : Colors.grey,
@@ -244,7 +246,7 @@ class _SplitBillsPageState extends State<SplitBillsPage> {
                               filled: true,
                               fillColor: Colors.white.withOpacity(0.2),
                               prefixIcon: Icon(
-                                Icons.search,
+                                FontAwesomeIcons.magnifyingGlass,
                                 color: _searchFocus.hasFocus
                                     ? Colors.white
                                     : Colors.grey,
@@ -293,7 +295,12 @@ class _SplitBillsPageState extends State<SplitBillsPage> {
           ),
         ),
         floatingActionButton: InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => isTabFriend
+                      ? const AddFriendPage()
+                      : const AddGroupPage()));
+            },
             child: Container(
               height: _width * 15,
               width: _width * 40,
@@ -334,7 +341,7 @@ class FriendViewBox extends StatelessWidget {
         DiceBearBuilder(sprite: DiceBearSprite.initials, seed: friend.name)
             .build();
     String urlimg = _avatar.svgUri.toString();
-    print(urlimg);
+    // print(urlimg);
     double _width = MediaQuery.of(context).size.width * 0.01;
     double _height = MediaQuery.of(context).size.height * 0.01;
     return InkWell(
@@ -430,11 +437,12 @@ class GroupViewBox extends StatelessWidget {
         DiceBearBuilder(sprite: DiceBearSprite.initials, seed: group.groupName)
             .build();
     String urlimg = _avatar.svgUri.toString();
-    print(urlimg);
+    // print(urlimg);
     double _width = MediaQuery.of(context).size.width * 0.01;
     double _height = MediaQuery.of(context).size.height * 0.01;
     return InkWell(
-      onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (_)=>GroupDetails(group:group))),
+      onTap: () => Navigator.of(context)
+          .push(MaterialPageRoute(builder: (_) => GroupDetails(group: group))),
       child: Container(
           width: _width * 100,
           height: _width * 40,
@@ -454,11 +462,12 @@ class GroupViewBox extends StatelessWidget {
                     color: secondary,
                     height: _width * 30,
                     width: _width * 30,
-                    child: Image.network(
-                      group.profilePicUrl,
-                      // _avatar.svgUri.toString(),
-                      fit: BoxFit.cover,
-                    ),
+                    child: _avatar.toImage(fit: BoxFit.cover),
+                    //  Image.network(
+                    //   group.profilePicUrl,
+                    //   // _avatar.svgUri.toString(),
+                    //   fit: BoxFit.cover,
+                    // ),
                   ),
                 ),
               ),

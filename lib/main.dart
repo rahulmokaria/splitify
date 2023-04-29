@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:splitify/ui/screens/customer/home_page.dart';
@@ -7,6 +9,8 @@ import 'ui/screens/login_page.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
+  HttpOverrides.global =
+      MyHttpOverrides(); //remove when releasing the app https://stackoverflow.com/questions/54285172/how-to-solve-flutter-certificate-verify-failed-error-while-performing-a-post-req/61312927#61312927
   runApp(const MyApp());
 }
 
@@ -24,5 +28,14 @@ class MyApp extends StatelessWidget {
       // home: const CusHomePage(),
       home: const LoginPage(),
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
