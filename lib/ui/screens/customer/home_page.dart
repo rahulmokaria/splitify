@@ -1,14 +1,14 @@
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:splitify/ui/screens/customer/expense_tracker.dart';
 import 'package:splitify/ui/screens/customer/split_bills.dart';
 
 import '../../utils/colors.dart';
-// import '../../widgets/bg.dart';
+import '../../widgets/show_snackbar.dart';
+
 import 'user_profile_page.dart';
 
 class CusHomePage extends StatefulWidget {
@@ -21,9 +21,25 @@ class CusHomePage extends StatefulWidget {
 class _CusHomePageState extends State<CusHomePage> {
   var _currentIndex = 0;
 
-  PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 0);
 
-  static List<Widget> _widgetOptions = <Widget>[
+  @override
+  initState() {
+    super.initState();
+    getContactsPermission();
+  }
+
+  getContactsPermission() async {
+    if (await Permission.contacts.request().isGranted) {
+      // Permission to access contacts is granted
+    } else {
+      // Permission to access contacts is denied
+      ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          "Oh Snap!!", "contat access denied", red, Icons.close));
+    }
+  }
+
+  static final List<Widget> _widgetOptions = <Widget>[
     const ExpenseTracker(),
     const SplitBillsPage(),
     // Text('Expense Tracker Page',
@@ -35,16 +51,10 @@ class _CusHomePageState extends State<CusHomePage> {
     // ),
     const Text('Bills Shopkeeper Page',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-    const UserProfile(),
-    // Text('Profile Page',
+    // Text('Notification Page',
     // style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+    const UserProfile(),
   ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +100,13 @@ class _CusHomePageState extends State<CusHomePage> {
             selectedColor: orange,
             unselectedColor: Colors.white,
           ),
+          //Notification
+          // SalomonBottomBarItem(
+          //   icon: const Icon(FontAwesomeIcons.solidBell),
+          //   title: const Text("Notifications"),
+          //   selectedColor: pink,
+          //   unselectedColor: Colors.white,
+          // ),
 
           /// Profile
           SalomonBottomBarItem(
