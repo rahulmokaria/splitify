@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:splitify/ui/screens/customer/transaction_page.dart';
 import '../../utils/colors.dart';
 import '../../widgets/glassmorphic_container.dart';
 import '../../widgets/pie_chart.dart';

@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:splitify/ui/models/transaction.dart';
 
 import '../../utils/colors.dart';
 import '../../widgets/text_field_ui.dart';
 
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import '../../widgets/show_snackbar.dart';
+import 'transaction_page.dart';
+
 class EditTransactionCard extends StatefulWidget {
-  DateTime date;
-  double amount;
-  String category;
-  String remark;
+  UserTransaction transaction;
 
   EditTransactionCard({
     Key? key,
-    required this.date,
-    required this.amount,
-    required this.category,
-    required this.remark,
+    required this.transaction,
   }) : super(key: key);
 
   @override
@@ -23,13 +25,12 @@ class EditTransactionCard extends StatefulWidget {
 
 class _EditTransactionCardState extends State<EditTransactionCard> {
   TextEditingController _amountController = TextEditingController();
-  TextEditingController _categoryController = TextEditingController();
   TextEditingController _remarkController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: widget.date,
+        initialDate: widget.transaction.transactionDate,
         firstDate: DateTime(2000),
         lastDate: DateTime(2100),
         builder: (context, child) {
@@ -52,10 +53,10 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
             child: child!,
           );
         });
-    if (picked != null && picked != widget.date) {
+    if (picked != null && picked != widget.transaction.transactionDate) {
       setState(() {
-        widget.date = picked;
-        print(widget.date);
+        widget.transaction.transactionDate = picked;
+        print(widget.transaction.transactionDate);
       });
     }
   }
@@ -117,12 +118,80 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
   @override
   void initState() {
     super.initState();
+    _amountController.text = widget.transaction.amount.toString();
 
-    _amountController.text = widget.amount.toString();
-    _categoryController.text = widget.category;
-    _remarkController.text = widget.remark;
-    dropdownValue = widget.category;
-    categories = widget.amount < 0 ? categoriesExpense : categoriesIncome;
+    _remarkController.text = widget.transaction.remark;
+    dropdownValue = widget.transaction.category;
+    categories =
+        widget.transaction.amount < 0 ? categoriesExpense : categoriesIncome;
+  }
+  deletetransaction()async{
+    String endPoint = dotenv.env["URL"].toString();
+    final storage = new FlutterSecureStorage();
+    try {
+      String? value = await storage.read(key: "authtoken");
+      var response = await http.post(Uri.parse(endPoint + "/api/user/deletetransaction"), body: {
+        "token": value,
+        "id": widget.transaction.transactionId,
+      });
+      var res = jsonDecode(response.body) as Map<String, dynamic>;
+      if (res['flag']) {
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            res['message'],
+            "Keep Enjoying",
+            green,
+            Icons.close));
+      }
+      else{
+         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            res['message'],
+            "Please contact admin to resolve",
+            pink,
+            Icons.close));
+      }
+    } catch (e) {
+      return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          e.toString(), "Please contact admin to resolve", pink, Icons.close));
+    }
+   }
+
+
+  editdata() async {
+    String endPoint = dotenv.env["URL"].toString();
+    final storage = new FlutterSecureStorage();
+    try {
+      String? value = await storage.read(key: "authtoken");
+      var date = widget.transaction.transactionDate;
+      date = DateTime.parse(date.toString());
+      var formattedDate = "${date.day}/${date.month}/${date.year}";
+      var response = await http
+          .post(Uri.parse(endPoint + "/api/user/edittransaction"), body: {
+        "token": value,
+        "id": widget.transaction.transactionId,
+        "addamount": _amountController.text,
+        "description": _remarkController.text,
+        "category": dropdownValue,
+        "date": formattedDate
+      });
+      var res = jsonDecode(response.body) as Map<String, dynamic>;
+      if (res['flag']) {
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            res['message'],
+            "Keep Enjoying",
+            green,
+            Icons.close));
+      }
+      else{
+         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            res['message'],
+            "Please contact admin to resolve",
+            pink,
+            Icons.close));
+      }
+    } catch (e) {
+      return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          e.toString(), "Please contact admin to resolve", pink, Icons.close));
+    }
   }
 
   @override
@@ -263,7 +332,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                         width: 20,
                       ),
                       Text(
-                        "${widget.date.day.toString() + " " + textMonth(widget.date.month)} ${widget.date.year}",
+                        "${widget.transaction.transactionDate.day.toString() + " " + textMonth(widget.transaction.transactionDate.month)} ${widget.transaction.transactionDate.year}",
                         style: TextStyle(
                           color: purple,
                         ),
@@ -293,7 +362,14 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                   ElevatedButton(
                     onPressed: () {
                       //TODO: implement edit transaction functionality
-                      Navigator.of(context).pop();
+                      editdata();
+                      // Navigator.of(context).popUntil(( context, MaterialPageRout));
+                      // if(Navigator.canPop(context)) {
+                      //   // Navigator.canPop return true if can pop
+                      //   Navigator.pop(context);
+                      // }
+                      // Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>TransactionPage()));
+                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
                       primary: white.withOpacity(0.2),
@@ -308,6 +384,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                   ElevatedButton(
                     onPressed: () {
                       //TODO: implement edit transaction functionality
+                      deletetransaction();
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(

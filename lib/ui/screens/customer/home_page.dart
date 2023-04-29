@@ -8,6 +8,7 @@ import 'package:splitify/ui/screens/customer/split_bills.dart';
 
 import '../../utils/colors.dart';
 import '../../widgets/show_snackbar.dart';
+
 import 'user_profile_page.dart';
 
 class CusHomePage extends StatefulWidget {

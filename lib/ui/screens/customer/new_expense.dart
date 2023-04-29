@@ -151,6 +151,7 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
             red,
             Icons.close));
       }
+
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
           e.toString(), "Please contact admin to resolve", red, Icons.close));
@@ -169,7 +170,7 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
     var _width = MediaQuery.of(context).size.width / 100;
     var _height = MediaQuery.of(context).size.height / 100;
     categories = widget.isExpense ? categoriesExpense : categoriesIncome;
-
+    
     return Scaffold(
       backgroundColor: secondary,
       appBar: AppBar(
