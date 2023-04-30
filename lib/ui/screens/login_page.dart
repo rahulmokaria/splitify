@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../utils/colors.dart';
 import '../widgets/show_snackbar.dart';
@@ -10,6 +13,7 @@ import 'customer/home_page.dart';
 import 'sign_up_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -23,65 +27,61 @@ class _LoginPageState extends State<LoginPage> {
 
   bool isShopkeeper = false;
   bool _isLoading = false;
-  
- 
+
   loginUser() async {
     setState(() {
       _isLoading = true;
     });
     try {
       const storage = FlutterSecureStorage();
-      var email=_emailTextController.text;
-      var password=_passwordTextController.text;
-      String endPoint=dotenv.env["URL"].toString();
-      if(isShopkeeper){
-        var response=await http.post(Uri.parse(endPoint+"/api/shopkeeper/login"),
-          body:{
-            "email":email.toString(),
-            "password":password.toString()
-          });
-          var res=jsonDecode(response.body) as Map<String,dynamic>;
-          if(!res['flag']){
-            return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], res['message'], red, Icons.close));
-          }
-          else{
-           await storage.write(key: "authtoken", value: res['message']);
-           String? value = await storage.read(key: "authtoken");
-           return gotoHome();
-          }
-      }
-      else{
-           var response=await http.post(Uri.parse(endPoint+"/api/user/login"),
-          body:{
-            "email":email.toString(),
-            "password":password.toString()
-          });
-          var res=jsonDecode(response.body) as Map<String,dynamic>;
-          if(!res['flag']){
-            return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], res['message'], red, Icons.close));
-          }
-          else{
-           await storage.write(key: "authtoken", value: res['message']);
-           String? value = await storage.read(key: "authtoken");
-           return gotoHome();
-          }
+      var email = _emailTextController.text;
+      var password = _passwordTextController.text;
+      String endPoint = dotenv.env["URL"].toString();
+      if (isShopkeeper) {
+        var response = await http.post(
+            Uri.parse(endPoint + "/api/shopkeeper/login"),
+            body: {"email": email.toString(), "password": password.toString()});
+        var res = jsonDecode(response.body) as Map<String, dynamic>;
+        if (!res['flag']) {
+          return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            ctype: ContentType.failure,
+            message: res['message'],
+          ));
+        } else {
+          await storage.write(key: "authtoken", value: res['message']);
+          String? value = await storage.read(key: "authtoken");
+          return gotoHome();
+        }
+      } else {
+        var response = await http.post(Uri.parse(endPoint + "/api/user/login"),
+            body: {"email": email.toString(), "password": password.toString()});
+        var res = jsonDecode(response.body) as Map<String, dynamic>;
+        if (!res['flag']) {
+          return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            ctype: ContentType.failure,
+            message: res['message'],
+          ));
+        } else {
+          await storage.write(key: "authtoken", value: res['message']);
+          String? value = await storage.read(key: "authtoken");
+          return gotoHome();
+        }
       }
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Error at registersation", "Please contact admin to resolve", red, Icons.close));
+        ctype: ContentType.failure,
+        message: "Error at registersation.Please contact admin to resolve",
+      ));
     }
 
-    
     setState(() {
       _isLoading = false;
     });
   }
 
   void gotoHome() {
-    Navigator.of(context)
-    .pushReplacement(MaterialPageRoute(builder: (_) => const CusHomePage()));
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const CusHomePage()));
   }
 
   @override
@@ -127,6 +127,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               //customer/shopkeeper
               Container(
+                height: _width * 15,
                 padding: EdgeInsets.all(_width * 2),
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
                 decoration: BoxDecoration(
@@ -208,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
                 child: textFieldUi(
                     text: 'Email',
-                    icon: Icons.person,
+                    icon: FontAwesomeIcons.solidUser,
                     textColor: primary,
                     isPasswordType: false,
                     controller: _emailTextController,
@@ -224,7 +225,7 @@ class _LoginPageState extends State<LoginPage> {
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
                 child: textFieldUi(
                     text: 'Password',
-                    icon: Icons.lock_outline,
+                    icon: FontAwesomeIcons.lock,
                     textColor: primary,
                     isPasswordType: true,
                     controller: _passwordTextController,

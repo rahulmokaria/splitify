@@ -1,6 +1,8 @@
-import 'package:dice_bear/dice_bear.dart';
+// import 'package:dice_bear/dice_bear.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:random_avatar/random_avatar.dart';
 
 import '../../utils/colors.dart';
 import '../../widgets/glassmorphic_container.dart';
@@ -26,9 +28,13 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   bool _isLoading = false;
   int _selectedCategory = 1;
+  // String svg = RandomAvatarString(
+  //   DateTime.now().toIso8601String(),
+  //   trBackground: false,
+  // );
 
-  Avatar _avatar =
-      DiceBearBuilder(sprite: DiceBearSprite.identicon, seed: "user").build();
+  // Avatar _avatar =
+  // DiceBearBuilder(sprite: DiceBearSprite.identicon, seed: "user").build();
   getprofile() async {
     try {
       String endPoint = dotenv.env["URL"].toString();
@@ -43,9 +49,9 @@ class _UserProfileState extends State<UserProfile> {
         setState(() {
           username = res['message']['name'];
           useremail = res['message']['email'];
-          _avatar =
-              DiceBearBuilder(sprite: DiceBearSprite.identicon, seed: username)
-                  .build();
+          // _avatar =
+          // DiceBearBuilder(sprite: DiceBearSprite.identicon, seed: username)
+          // .build();
         });
       } else {
         setState(() {
@@ -53,14 +59,15 @@ class _UserProfileState extends State<UserProfile> {
           useremail = "user@gmail.com";
         });
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            "Please contact admin to resolve",
-            res['message'],
-            pink,
-            Icons.close));
+          ctype: ContentType.failure,
+          message: res['message'] + "Please contact admin to resolve",
+        ));
       }
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          "Please contact admin to resolve", e.toString(), pink, Icons.close));
+        ctype: ContentType.failure,
+        message: e.toString() + "Please contact admin to resolve",
+      ));
     }
   }
 
@@ -69,18 +76,23 @@ class _UserProfileState extends State<UserProfile> {
     super.initState();
     getprofile();
   }
-  logout()async{
+
+  logout() async {
     try {
       final storage = new FlutterSecureStorage();
       String? value = await storage.read(key: "authtoken");
       await storage.delete(key: "authtoken");
-       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-    LoginPage()), (Route<dynamic> route) => false);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false);
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          "Smething went wrong", "Please try after sometime", pink, Icons.close)); 
+        ctype: ContentType.failure,
+        message: "Smething went wrong. Please try after sometime",
+      ));
     }
   }
+
   String username = "";
   String useremail = "";
 
@@ -90,9 +102,10 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width * 0.01;
     double _height = MediaQuery.of(context).size.height * 0.01;
-    print(_width);
-    urlimg = _avatar.svgUri.toString();
-    print(urlimg);
+
+    // print();
+    // urlimg = _avatar.svgUri.toString();
+    // print(svg);
     // model.User cUser = model.User.fromMap(userData);
     return SafeArea(
       child: Scaffold(
@@ -169,15 +182,20 @@ class _UserProfileState extends State<UserProfile> {
                           color: secondary,
                           height: MediaQuery.of(context).size.width * 0.4,
                           width: MediaQuery.of(context).size.width * 0.4,
-                          child: _avatar.toImage(
-                            // height: _width * 80,
-                            // width: _width * 80,
+                          child:
+                              // _avatar.toImage(
+                              // height: _width * 80,
+                              // width: _width * 80,
+                              // fit: BoxFit.cover,
+                              // ),
+                              Image.network(
+                            // svg.toString(),
+                            'https://picsum.photos/200',
+                            // widget.friend.photoUrl,
+                            height: _width * 80,
+                            width: _width * 80,
                             fit: BoxFit.cover,
                           ),
-                          //  Image.network(
-                          //   widget.friend.photoUrl,
-                          //   fit: BoxFit.cover,
-                          // ),
                         ),
                       ),
                     ),
@@ -228,12 +246,14 @@ class _UserProfileState extends State<UserProfile> {
                         Flexible(flex: 1, child: Container()),
                         InkWell(
                             onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => EditUsernameCard(
-                                    username: username,
-                                  ),
+                              // Navigator.of(context).push(
+                              // MaterialPageRoute(
+                              showDialog(
+                                context: context,
+                                builder: (_) => EditUsernameCard(
+                                  username: username,
                                 ),
+                                // ),
                               );
                             },
                             child: Icon(FontAwesomeIcons.solidPenToSquare,
@@ -281,8 +301,10 @@ class _UserProfileState extends State<UserProfile> {
                   height: _width * 10,
                 ),
                 InkWell(
-                  onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => ChangePasswordCard())),
+                  onTap: () => showDialog(
+                      context: context, builder: (_) => ChangePasswordCard()),
+                  // Navigator.of(context).push(
+                  // MaterialPageRoute(builder: (_) => ChangePasswordCard())),
                   child: Container(
                     height: _width * 15,
                     width: _width * 80,
@@ -317,10 +339,7 @@ class _UserProfileState extends State<UserProfile> {
                   height: _width * 10,
                 ),
                 InkWell(
-                  onTap: ()=>
-                    logout()
-
-                  ,
+                  onTap: () => logout(),
                   child: Container(
                     height: _width * 15,
                     width: _width * 80,
@@ -395,17 +414,20 @@ class _EditUsernameCardState extends State<EditUsernameCard> {
           _usernameController.text;
         });
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            "Successfully changed", "keep using", green, Icons.close));
+          ctype: ContentType.success,
+          message: "Successfully changed",
+        ));
       } else {
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            "Please contact admin to resolve",
-            res['message'],
-            pink,
-            Icons.close));
+          ctype: ContentType.failure,
+          message: res['message'] + "Please contact admin to resolve",
+        ));
       }
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          "Please contact admin to resolve", e.toString(), pink, Icons.close));
+        ctype: ContentType.failure,
+        message: e.toString() + "Please contact admin to resolve",
+      ));
     }
   }
 
@@ -441,7 +463,7 @@ class _EditUsernameCardState extends State<EditUsernameCard> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: purple,
+                  color: blue,
                 ),
               ),
               SizedBox(height: width * 5),
@@ -449,8 +471,8 @@ class _EditUsernameCardState extends State<EditUsernameCard> {
                 // padding: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'New Username',
-                    icon: Icons.wallet,
-                    textColor: purple,
+                    icon: FontAwesomeIcons.solidUser,
+                    textColor: blue,
                     isPasswordType: false,
                     controller: _usernameController,
                     inputType: TextInputType.name),
@@ -534,17 +556,20 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
       var res = jsonDecode(response.body) as Map<String, dynamic>;
       if (res['flag']) {
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            "Password changed Successfully", "keep using", green, Icons.close));
+          ctype: ContentType.success,
+          message: "Password changed Successfully",
+        ));
       } else {
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            "Please contact admin to resolve",
-            res['message'],
-            pink,
-            Icons.close));
+          ctype: ContentType.failure,
+          message: res['message'] + "Please contact admin to resolve",
+        ));
       }
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          "Please contact admin to resolve", e.toString(), pink, Icons.close));
+        ctype: ContentType.failure,
+        message: "${e}Please contact admin to resolve",
+      ));
     }
   }
 
@@ -580,7 +605,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: purple,
+                  color: blue,
                 ),
               ),
               SizedBox(height: width * 5),
@@ -588,8 +613,8 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                 // padding: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'New Password',
-                    icon: Icons.wallet,
-                    textColor: purple,
+                    icon: FontAwesomeIcons.lock,
+                    textColor: blue,
                     isPasswordType: false,
                     controller: _passwordController,
                     inputType: TextInputType.name),
@@ -599,8 +624,8 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                 // padding: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Confirm Password',
-                    icon: Icons.wallet,
-                    textColor: purple,
+                    icon: FontAwesomeIcons.lock,
+                    textColor: blue,
                     isPasswordType: false,
                     controller: _passwordController,
                     inputType: TextInputType.name),

@@ -35,9 +35,9 @@ textMonth(num month) {
   }
 }
 
-class TransactionBox extends StatelessWidget {
-  UserTransaction transaction;
-  TransactionBox({super.key, required this.transaction});
+class BillSplitTransactionBox extends StatelessWidget {
+  BillSplitTransaction transaction;
+  BillSplitTransactionBox({super.key, required this.transaction});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,8 @@ class TransactionBox extends StatelessWidget {
                           color: primary.withAlpha(70),
                         ),
                         child: Text(
-                          transaction.category,
+                          "etgdrh",
+                          // transaction.category,
                           textScaleFactor: 1.2,
                           style: const TextStyle(
                             color: white,
@@ -104,16 +105,11 @@ class TransactionBox extends StatelessWidget {
                   Row(
                     children: [
                       InkWell(
-                        onTap: () =>
-                            // Navigator.of(context).push(
-                            // MaterialPageRoute(
-                            showDialog(
-                                context: context,
-                                builder: (_) => EditTransactionCard(
-                                      transaction: transaction,
-                                    )
-                                // )
-                                ),
+                        // onTap: () =>
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        // builder: (_) => EditTransactionCard(
+                        // transaction: transaction,
+                        // ))),
                         child: Icon(
                           FontAwesomeIcons.pen,
                           color: white,

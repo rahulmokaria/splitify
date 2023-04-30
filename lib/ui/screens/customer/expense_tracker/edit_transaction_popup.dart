@@ -1,14 +1,16 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:splitify/ui/models/transaction.dart';
 
-import '../../utils/colors.dart';
-import '../../widgets/text_field_ui.dart';
+import '../../../utils/colors.dart';
+import '../../../widgets/text_field_ui.dart';
 
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import '../../widgets/show_snackbar.dart';
+import '../../../widgets/show_snackbar.dart';
 import 'transaction_page.dart';
 
 class EditTransactionCard extends StatefulWidget {
@@ -125,36 +127,36 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
     categories =
         widget.transaction.amount < 0 ? categoriesExpense : categoriesIncome;
   }
-  deletetransaction()async{
+
+  deletetransaction() async {
     String endPoint = dotenv.env["URL"].toString();
     final storage = new FlutterSecureStorage();
     try {
       String? value = await storage.read(key: "authtoken");
-      var response = await http.post(Uri.parse(endPoint + "/api/user/deletetransaction"), body: {
+      var response = await http
+          .post(Uri.parse(endPoint + "/api/user/deletetransaction"), body: {
         "token": value,
         "id": widget.transaction.transactionId,
       });
       var res = jsonDecode(response.body) as Map<String, dynamic>;
       if (res['flag']) {
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            res['message'],
-            "Keep Enjoying",
-            green,
-            Icons.close));
-      }
-      else{
-         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            res['message'],
-            "Please contact admin to resolve",
-            pink,
-            Icons.close));
+          ctype: ContentType.success,
+          message: res['message'] + "Keep Enjoying",
+        ));
+      } else {
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          ctype: ContentType.failure,
+          message: res['message'] + "Please contact admin to resolve",
+        ));
       }
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          e.toString(), "Please contact admin to resolve", pink, Icons.close));
+        ctype: ContentType.failure,
+        message: e.toString() + "Please contact admin to resolve",
+      ));
     }
-   }
-
+  }
 
   editdata() async {
     String endPoint = dotenv.env["URL"].toString();
@@ -176,21 +178,20 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
       var res = jsonDecode(response.body) as Map<String, dynamic>;
       if (res['flag']) {
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            res['message'],
-            "Keep Enjoying",
-            green,
-            Icons.close));
-      }
-      else{
-         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            res['message'],
-            "Please contact admin to resolve",
-            pink,
-            Icons.close));
+          ctype: ContentType.success,
+          message: res['message'] + "Keep Enjoying",
+        ));
+      } else {
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          ctype: ContentType.failure,
+          message: res['message'] + "Please contact admin to resolve",
+        ));
       }
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          e.toString(), "Please contact admin to resolve", pink, Icons.close));
+        ctype: ContentType.failure,
+        message: "${e}Please contact admin to resolve",
+      ));
     }
   }
 
@@ -234,7 +235,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                 // padding: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Amount',
-                    icon: Icons.wallet,
+                    icon: FontAwesomeIcons.wallet,
                     textColor: purple,
                     isPasswordType: false,
                     controller: _amountController,
@@ -291,7 +292,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                         setState(() {});
                         print(dropdownValue);
                       },
-                      icon: const Icon(Icons.keyboard_arrow_down),
+                      icon: const Icon(FontAwesomeIcons.chevronDown),
                       style: TextStyle(
                         color: purple,
                       ),
@@ -304,7 +305,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                 // margin: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Description',
-                    icon: Icons.menu,
+                    icon: FontAwesomeIcons.bars,
                     textColor: purple,
                     isPasswordType: false,
                     controller: _remarkController,
@@ -369,7 +370,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       //   Navigator.pop(context);
                       // }
                       // Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>TransactionPage()));
-                       Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
                       primary: white.withOpacity(0.2),

@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../utils/colors.dart';
 import '../widgets/show_snackbar.dart';
@@ -45,68 +47,69 @@ class _SignUpPageState extends State<SignUpPage> {
       _isLoading = true;
     });
     void gotoLogin() {
-    Navigator.of(context)
-    .pushReplacement(MaterialPageRoute(builder: (_) => const LoginPage()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const LoginPage()));
     }
-    try {
-        var email=_emailTextController.text;
-        var name=_nameTextController.text;
-        var password=_passwordTextController.text;
-        var confirmpassword=_confirmPasswordTextController.text;
 
-        if(password!=confirmpassword){
+    try {
+      var email = _emailTextController.text;
+      var name = _nameTextController.text;
+      var password = _passwordTextController.text;
+      var confirmpassword = _confirmPasswordTextController.text;
+
+      if (password != confirmpassword) {
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            ctype: ContentType.failure,
+            message: "Password and confirm password is not matching"));
+      }
+      String endPoint = dotenv.env["URL"].toString();
+      if (isShopkeeper) {
+        var response = await http
+            .post(Uri.parse(endPoint + "/api/shopkeeper/register"), body: {
+          "email": email.toString(),
+          "name": name.toString(),
+          "password": password.toString()
+        });
+        var res = jsonDecode(response.body) as Map<String, dynamic>;
+        if (!res['flag']) {
           return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Password not matching", "Password and confirm password is not matching", red, Icons.close));
+              ctype: ContentType.failure, message: res['message']));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            ctype: ContentType.success,
+            message: "Successfully registered. You can login now",
+          ));
+          return gotoLogin();
         }
-        String endPoint=dotenv.env["URL"].toString();
-        if(isShopkeeper){
-          var response=await http.post(Uri.parse(endPoint+"/api/shopkeeper/register"),
-          body:{
-            "email":email.toString(),
-            "name":name.toString(),
-            "password":password.toString()
-          });
-          var res=jsonDecode(response.body) as Map<String,dynamic>;
-          if(!res['flag']){
-            return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], res['message'], red, Icons.close));
-          }
-          else{
-            ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Successfully registered" , "You can login now", green, Icons.celebration));
-            return gotoLogin();
-          }
+      } else {
+        var response =
+            await http.post(Uri.parse(endPoint + "/api/user/register"), body: {
+          "email": email.toString(),
+          "name": name.toString(),
+          "password": password.toString()
+        });
+        var res = jsonDecode(response.body) as Map<String, dynamic>;
+        if (!res['flag']) {
+          return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+              ctype: ContentType.failure, message: res['message']));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            ctype: ContentType.success,
+            message: "Successfully registered. You can login now",
+          ));
+          return gotoLogin();
         }
-        else{
-          var response=await http.post(Uri.parse(endPoint+"/api/user/register")
-          ,body:{
-            "email":email.toString(),
-            "name":name.toString(),
-            "password":password.toString()
-          });
-          var res=jsonDecode(response.body) as Map<String,dynamic>;
-          if(!res['flag']){
-            return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], res['message'], red, Icons.close));
-          }
-          else{
-            ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Successfully registered" , "You can login now", green, Icons.celebration));
-             return gotoLogin();
-          }
-        }
-        
+      }
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Error at registersation", "Please contact admin to resolve", red, Icons.close));
+        ctype: ContentType.failure,
+        message: "Error at registersation. Please contact admin to resolve",
+      ));
     }
-   
-
 
     setState(() {
       _isLoading = false;
     });
-
   }
 
   @override
@@ -231,7 +234,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
                 child: textFieldUi(
                     text: 'Email',
-                    icon: Icons.person,
+                    icon: FontAwesomeIcons.solidEnvelope,
                     textColor: primary,
                     isPasswordType: false,
                     controller: _emailTextController,
@@ -245,7 +248,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
                 child: textFieldUi(
                     text: 'Name',
-                    icon: Icons.person,
+                    icon: FontAwesomeIcons.solidUser,
                     textColor: primary,
                     isPasswordType: false,
                     controller: _nameTextController,
@@ -260,7 +263,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
                 child: textFieldUi(
                     text: 'New Password',
-                    icon: Icons.lock_outline,
+                    icon: FontAwesomeIcons.lock,
                     textColor: primary,
                     isPasswordType: true,
                     controller: _passwordTextController,
@@ -274,7 +277,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
                 child: textFieldUi(
                     text: 'Confirm Password',
-                    icon: Icons.lock_outline,
+                    icon: FontAwesomeIcons.lock,
                     textColor: primary,
                     isPasswordType: true,
                     controller: _confirmPasswordTextController,
@@ -314,7 +317,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         )
                       : const Text(
-                          "Login",
+                          "Sign Up",
                           style: TextStyle(
                             color: secondary,
                             fontWeight: FontWeight.bold,

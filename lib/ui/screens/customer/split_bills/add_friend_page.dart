@@ -1,5 +1,5 @@
 import 'package:contacts_service/contacts_service.dart';
-import 'package:dice_bear/dice_bear.dart';
+// import 'package:dice_bear/dice_bear.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -211,12 +211,12 @@ class NewFriendBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Avatar _avatar = DiceBearBuilder(
-      sprite: DiceBearSprite.adventurer,
-      seed:
-          "${(contact.givenName != null) ? contact.givenName : ""} ${(contact.familyName != null) ? contact.familyName : ""}",
-    ).build();
-    String urlimg = _avatar.svgUri.toString();
+    // Avatar _avatar = DiceBearBuilder(
+    // sprite: DiceBearSprite.adventurer,
+    // seed:
+    // "${(contact.givenName != null) ? contact.givenName : ""} ${(contact.familyName != null) ? contact.familyName : ""}",
+    // ).build();
+    // String urlimg = _avatar.svgUri.toString();
     // print(urlimg);
     double _width = MediaQuery.of(context).size.width * 0.01;
     double _height = MediaQuery.of(context).size.height * 0.01;
@@ -247,8 +247,8 @@ class NewFriendBox extends StatelessWidget {
                         // _avatar.toImage(),
                         Image.network(
                       // friend.photoUrl,
-                      _avatar.svgUri.toString(),
-                      // 'https://picsum.photos/200',
+                      // _avatar.svgUri.toString(),
+                      'https://picsum.photos/200',
                       fit: BoxFit.cover,
                     ),
                   ),
