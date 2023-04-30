@@ -1,15 +1,15 @@
 import 'dart:math';
 
-import 'package:dice_bear/dice_bear.dart';
+// import 'package:dice_bear/dice_bear.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:splitify/ui/screens/customer/add_friend_page.dart';
-import 'package:splitify/ui/screens/customer/friend_details.dart';
+import 'package:splitify/ui/screens/customer/split_bills/add_friend_page.dart';
+import 'package:splitify/ui/screens/customer/split_bills/friend_details.dart';
 import 'package:splitify/ui/utils/colors.dart';
 
-import '../../widgets/glassmorphic_container.dart';
+import '../../../widgets/glassmorphic_container.dart';
 import 'add_group_page.dart';
 import 'group_details.dart';
 
@@ -101,7 +101,11 @@ class _SplitBillsPageState extends State<SplitBillsPage> {
 
     List<Friend> friendList = List.generate(10, (index) {
       String randomImageUrl = imageUrls[Random().nextInt(imageUrls.length)];
-      String randomName = 'Friend ${index + 1}';
+      String randomName = (index == 0)
+          ? 'Alice'
+          : (index == 1)
+              ? "Bob"
+              : 'Friend ${index + 1}';
       double randomBalance = Random().nextDouble() * 500.0;
       if (randomBalance < 250) randomBalance = -randomBalance;
       return Friend(
@@ -337,10 +341,10 @@ class FriendViewBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Avatar _avatar =
-        DiceBearBuilder(sprite: DiceBearSprite.initials, seed: friend.name)
-            .build();
-    String urlimg = _avatar.svgUri.toString();
+    // Avatar _avatar =
+    // DiceBearBuilder(sprite: DiceBearSprite.initials, seed: friend.name)
+    // .build();
+    // String urlimg = _avatar.svgUri.toString();
     // print(urlimg);
     double _width = MediaQuery.of(context).size.width * 0.01;
     double _height = MediaQuery.of(context).size.height * 0.01;
@@ -433,10 +437,10 @@ class GroupViewBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Avatar _avatar =
-        DiceBearBuilder(sprite: DiceBearSprite.initials, seed: group.groupName)
-            .build();
-    String urlimg = _avatar.svgUri.toString();
+    // Avatar _avatar =
+    // DiceBearBuilder(sprite: DiceBearSprite.initials, seed: group.groupName)
+    // .build();
+    // String urlimg = _avatar.svgUri.toString();
     // print(urlimg);
     double _width = MediaQuery.of(context).size.width * 0.01;
     double _height = MediaQuery.of(context).size.height * 0.01;
@@ -462,12 +466,13 @@ class GroupViewBox extends StatelessWidget {
                     color: secondary,
                     height: _width * 30,
                     width: _width * 30,
-                    child: _avatar.toImage(fit: BoxFit.cover),
-                    //  Image.network(
-                    //   group.profilePicUrl,
-                    //   // _avatar.svgUri.toString(),
-                    //   fit: BoxFit.cover,
-                    // ),
+                    child:
+                        //  _avatar.toImage(fit: BoxFit.cover),
+                        Image.network(
+                      group.profilePicUrl,
+                      // _avatar.svgUri.toString(),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

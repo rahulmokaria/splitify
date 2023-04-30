@@ -1,13 +1,14 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../utils/colors.dart';
-import '../../widgets/text_field_ui.dart';
+import '../../../utils/colors.dart';
+import '../../../widgets/text_field_ui.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import '../../widgets/show_snackbar.dart';
+import '../../../widgets/show_snackbar.dart';
 
 class CreateNewExpense extends StatefulWidget {
   bool isExpense;
@@ -143,18 +144,20 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
       var res = jsonDecode(response.body) as Map<String, dynamic>;
       if (res['flag']) {
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            res['message'], "Keep Adding 😀😀", green, Icons.celebration));
+          ctype: ContentType.success,
+          message: res['message'] + "Keep Adding 😀😀",
+        ));
       } else {
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            res['message'],
-            "Please contact admin to resolve",
-            red,
-            Icons.close));
+          ctype: ContentType.failure,
+          message: res['message'],
+        ));
       }
-
     } catch (e) {
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          e.toString(), "Please contact admin to resolve", red, Icons.close));
+        ctype: ContentType.failure,
+        message: "${e}  Please contact admin to resolve",
+      ));
     }
   }
 
@@ -170,10 +173,13 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
     var _width = MediaQuery.of(context).size.width / 100;
     var _height = MediaQuery.of(context).size.height / 100;
     categories = widget.isExpense ? categoriesExpense : categoriesIncome;
-    
+
     return Scaffold(
       backgroundColor: secondary,
       appBar: AppBar(
+        leading: InkWell(
+            onTap: () => Navigator.of(context).pop(),
+            child: Icon(FontAwesomeIcons.arrowLeft)),
         title: Text(
           widget.isExpense ? 'New Expense' : 'New Income',
         ),

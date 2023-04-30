@@ -1,10 +1,11 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:splitify/ui/screens/customer/expense_tracker.dart';
-import 'package:splitify/ui/screens/customer/split_bills.dart';
+import 'package:splitify/ui/screens/customer/expense_tracker/expense_tracker.dart';
+import 'package:splitify/ui/screens/customer/split_bills/split_bills.dart';
 
 import '../../utils/colors.dart';
 import '../../widgets/show_snackbar.dart';
@@ -35,7 +36,9 @@ class _CusHomePageState extends State<CusHomePage> {
     } else {
       // Permission to access contacts is denied
       ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          "Oh Snap!!", "contat access denied", red, Icons.close));
+          ctype: ContentType.failure,
+          message:
+              "Contact access denied. Please allow the app to access the contact list."));
     }
   }
 
