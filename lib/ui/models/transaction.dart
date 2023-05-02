@@ -24,15 +24,17 @@ class UserTransaction {
 
 class BillSplitTransaction {
   String id;
-  String fromFriend;
-  String toFriend;
+  double userShare;
+  double friendShare;
+  String paidBy;
   double amount;
   DateTime transactionDate;
   String remark;
 
   BillSplitTransaction({
-    required this.fromFriend,
-    required this.toFriend,
+    required this.friendShare,
+    required this.userShare,
+    required this.paidBy,
     required this.amount,
     required this.remark,
     required this.id,
@@ -41,23 +43,9 @@ class BillSplitTransaction {
 
   Map<String, dynamic> toMap() {
     return {
-      'fromFriend': fromFriend,
-      'toFriend': toFriend,
       'amount': amount,
       'transactionDate': transactionDate,
       'remark': remark,
     };
-  }
-
-  BillSplitTransaction.fromMap(Map<String, dynamic> map, {required this.id})
-      : fromFriend = map['fromFriend'],
-        toFriend = map['toFriend'],
-        amount = map['amount'],
-        transactionDate = map['transactionDate'],
-        remark = map['remark'];
-
-  void printTransaction() {
-    print(
-        "$fromFriend paid $amount to $toFriend on $transactionDate with remark: $remark.");
   }
 }
