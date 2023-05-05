@@ -30,6 +30,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _confirmPasswordTextController =
       TextEditingController();
   final TextEditingController _nameTextController = TextEditingController();
+  final TextEditingController _contactNumberTextController =
+      TextEditingController();
 
   bool isShopkeeper = false;
   bool _isLoading = false;
@@ -40,6 +42,7 @@ class _SignUpPageState extends State<SignUpPage> {
     _passwordTextController.dispose();
     _confirmPasswordTextController.dispose();
     _nameTextController.dispose();
+    _confirmPasswordTextController.dispose();
   }
 
   signUpUser() async {
@@ -56,6 +59,7 @@ class _SignUpPageState extends State<SignUpPage> {
       var name = _nameTextController.text;
       var password = _passwordTextController.text;
       var confirmpassword = _confirmPasswordTextController.text;
+      var contactNumber = _contactNumberTextController.text;
 
       if (password != confirmpassword) {
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
@@ -253,6 +257,20 @@ class _SignUpPageState extends State<SignUpPage> {
                     isPasswordType: false,
                     controller: _nameTextController,
                     inputType: TextInputType.name),
+              ),
+              Flexible(
+                flex: 1,
+                child: Container(),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                child: textFieldUi(
+                    text: 'Contact No.',
+                    icon: FontAwesomeIcons.phone,
+                    textColor: primary,
+                    isPasswordType: false,
+                    controller: _contactNumberTextController,
+                    inputType: TextInputType.number),
               ),
               Flexible(
                 flex: 1,

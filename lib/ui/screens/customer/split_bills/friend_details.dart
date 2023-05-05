@@ -5,6 +5,7 @@ import '../../../models/transaction.dart';
 import '../../../utils/colors.dart';
 import '../../../widgets/bill_split_transaction.dart';
 import '../../../widgets/glassmorphic_container.dart';
+import 'new_bill_split_page.dart';
 import 'split_bills.dart';
 
 class FriendDetails extends StatefulWidget {
@@ -34,8 +35,8 @@ class _FriendDetailsState extends State<FriendDetails> {
     List<BillSplitTransaction> transactions = [
       BillSplitTransaction(
         id: '1',
-        userShare: 10.0,
-        friendShare: 20.0,
+        shareOfPayer: 10.0,
+        shareOfBorrower: 20.0,
         paidBy: 'Alice',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -43,8 +44,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '2',
-        userShare: 15.0,
-        friendShare: 15.0,
+        shareOfPayer: 15.0,
+        shareOfBorrower: 15.0,
         paidBy: 'Bob',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -52,8 +53,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '3',
-        userShare: 5.0,
-        friendShare: 25.0,
+        shareOfPayer: 5.0,
+        shareOfBorrower: 25.0,
         paidBy: 'Alice',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -61,8 +62,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '4',
-        userShare: 12.5,
-        friendShare: 12.5,
+        shareOfPayer: 12.5,
+        shareOfBorrower: 12.5,
         paidBy: 'Bob',
         amount: 25.0,
         transactionDate: DateTime.now(),
@@ -70,8 +71,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '5',
-        userShare: 20.0,
-        friendShare: 10.0,
+        shareOfPayer: 20.0,
+        shareOfBorrower: 10.0,
         paidBy: 'Alice',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -79,8 +80,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '6',
-        userShare: 7.0,
-        friendShare: 23.0,
+        shareOfPayer: 7.0,
+        shareOfBorrower: 23.0,
         paidBy: 'Bob',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -88,8 +89,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '7',
-        userShare: 15.0,
-        friendShare: 15.0,
+        shareOfPayer: 15.0,
+        shareOfBorrower: 15.0,
         paidBy: 'Alice',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -97,8 +98,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '8',
-        userShare: 10.0,
-        friendShare: 20.0,
+        shareOfPayer: 10.0,
+        shareOfBorrower: 20.0,
         paidBy: 'Bob',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -106,8 +107,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '9',
-        userShare: 18.0,
-        friendShare: 12.0,
+        shareOfPayer: 18.0,
+        shareOfBorrower: 12.0,
         paidBy: 'Alice',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -115,8 +116,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '10',
-        userShare: 25.0,
-        friendShare: 5.0,
+        shareOfPayer: 25.0,
+        shareOfBorrower: 5.0,
         paidBy: 'Bob',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -124,8 +125,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '11',
-        userShare: 10.0,
-        friendShare: 20.0,
+        shareOfPayer: 10.0,
+        shareOfBorrower: 20.0,
         paidBy: 'Alice',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -133,8 +134,8 @@ class _FriendDetailsState extends State<FriendDetails> {
       ),
       BillSplitTransaction(
         id: '12',
-        userShare: 22.0,
-        friendShare: 8.0,
+        shareOfPayer: 22.0,
+        shareOfBorrower: 8.0,
         paidBy: 'Bob',
         amount: 30.0,
         transactionDate: DateTime.now(),
@@ -176,7 +177,7 @@ class _FriendDetailsState extends State<FriendDetails> {
                         ),
                         child: Image.asset(
                           // widget.cUser.backCoverImg
-                          'assets/greenbg.jpg',
+                          'assets/greenbg.png',
                           height: _width * 50,
                           width: _width * 100,
                           fit: BoxFit.cover,
@@ -258,12 +259,10 @@ class _FriendDetailsState extends State<FriendDetails> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   InkWell(
-                    // onTap: () {
-                    //   Navigator.of(context).push(MaterialPageRoute(
-                    //       builder: (_) => CreateNewExpense(
-                    //             isExpense: false,
-                    //           )));
-                    // },
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => NewBillSplitPage()));
+                    },
                     child: Container(
                       height: _width * 15,
                       width: _width * 40,

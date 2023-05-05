@@ -165,9 +165,7 @@ class BillSplitTransactionBox extends StatelessWidget {
                           height: width * 2,
                         ),
                         Text(
-                          (transaction.paidBy != friendName)
-                              ? transaction.friendShare.toString()
-                              : transaction.userShare.toString(),
+                          transaction.shareOfBorrower.toString(),
                           textScaleFactor: 1.2,
                           style: TextStyle(
                             color: (transaction.paidBy != friendName)

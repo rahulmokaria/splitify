@@ -24,16 +24,16 @@ class UserTransaction {
 
 class BillSplitTransaction {
   String id;
-  double userShare;
-  double friendShare;
+  double shareOfPayer;
+  double shareOfBorrower;
   String paidBy;
   double amount;
   DateTime transactionDate;
   String remark;
 
   BillSplitTransaction({
-    required this.friendShare,
-    required this.userShare,
+    required this.shareOfBorrower,
+    required this.shareOfPayer,
     required this.paidBy,
     required this.amount,
     required this.remark,
