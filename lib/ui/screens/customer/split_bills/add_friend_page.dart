@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:splitify/ui/utils/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AddFriendPage extends StatefulWidget {
   const AddFriendPage({super.key});
@@ -18,14 +19,16 @@ class _AddFriendPageState extends State<AddFriendPage> {
   FocusNode _searchFocus = FocusNode();
   late Iterable<Contact> contacts;
   bool _isLoading = false;
-  List<User> userList = [];
+  List<Contact> filteredContacts = [];
 
   getContacts() async {
     setState(() {
       _isLoading = true;
     });
     print(1);
+
     contacts = await ContactsService.getContacts();
+    filteredContacts = contacts.toList();
     print(1);
     // for (var contact in contacts) {
     //   userList.add(User(
@@ -39,10 +42,24 @@ class _AddFriendPageState extends State<AddFriendPage> {
     });
   }
 
+  void filterContacts() {
+    final searchText = _searchController.text.toLowerCase();
+    setState(() {
+      filteredContacts = contacts
+          .where((contact) =>
+              contact.givenName!.toLowerCase().contains(searchText) ||
+              contact.phones![0].toString().toLowerCase().contains(searchText))
+          .toList();
+    });
+    print(_searchController.text);
+  }
+
   @override
   initState() {
     super.initState();
     getContacts();
+    _searchController = TextEditingController();
+    _searchController.addListener(filterContacts);
   }
 
   @override
@@ -188,7 +205,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                     SizedBox(
                       height: _width * 5,
                     ),
-                    for (var user in contacts) ...{
+                    for (var user in filteredContacts) ...{
                       if (user.phones!.isNotEmpty) ...{
                         NewFriendBox(contact: user),
                         SizedBox(
@@ -209,6 +226,21 @@ class NewFriendBox extends StatelessWidget {
   // User user;
   NewFriendBox({super.key, required this.contact});
 
+  textContact() async {
+// if we are unable to launch the phone app, we will throw an error. This is what the below line means. launch is an in-built function provided by url_launcher
+//  if (!await launch('tel:+919876543210')) throw 'Could not launch phone app';
+    final Uri smsLaunchUri = Uri(
+      scheme: 'sms',
+      path: contact.phones![0].value.toString(),
+      queryParameters: <String, String>{
+        'body': Uri.encodeComponent(
+            'Hi ${contact.givenName}! Tap this link to add me as a friend on Splitify: https://github.com/rahulmokaria'),
+      },
+    );
+
+    launchUrl(smsLaunchUri);
+  }
+
   @override
   Widget build(BuildContext context) {
     // Avatar _avatar = DiceBearBuilder(
@@ -224,6 +256,7 @@ class NewFriendBox extends StatelessWidget {
     return InkWell(
       // onTap: () => Navigator.of(context).push(
       // MaterialPageRoute(builder: (_) => FriendDetails(friend: friend))),
+      onTap: () => textContact(),
       child: Container(
           width: _width * 100,
           height: _width * 23,
@@ -245,6 +278,10 @@ class NewFriendBox extends StatelessWidget {
                     width: _width * 18,
                     child:
                         // _avatar.toImage(),
+                        //     Image.asset(
+                        //   contact.avatar.toString(),
+                        //   fit: BoxFit.cover,
+                        // ),
                         Image.network(
                       // friend.photoUrl,
                       // _avatar.svgUri.toString(),

@@ -36,14 +36,16 @@ textMonth(num month) {
 }
 
 class BillSplitTransactionBox extends StatelessWidget {
+  String friendName;
   BillSplitTransaction transaction;
-  BillSplitTransactionBox({super.key, required this.transaction});
+  BillSplitTransactionBox(
+      {super.key, required this.transaction, required this.friendName});
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width / 100;
     return SizedBox(
-      height: width * 42,
+      height: width * 27,
       child: GlassMorphism(
         start: .25,
         end: 0,
@@ -53,19 +55,6 @@ class BillSplitTransactionBox extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Flexible(
-                child: Text(transaction.remark,
-                    textScaleFactor: 1.75,
-                    style: TextStyle(
-                      color: purple,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-              ),
-
-              const Divider(
-                color: white,
-              ),
               // const SizedBox(
               //   height: 10,
               // ),
@@ -76,74 +65,115 @@ class BillSplitTransactionBox extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: primary.withAlpha(70),
-                        ),
-                        child: Text(
-                          "etgdrh",
-                          // transaction.category,
-                          textScaleFactor: 1.2,
-                          style: const TextStyle(
-                            color: white,
-                          ),
-                        ),
+                        width: width * 66,
+                        child: Text(transaction.remark,
+                            textScaleFactor: 1.2,
+                            style: TextStyle(
+                              color: white,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
                       ),
+                      SizedBox(
+                        height: width * 1,
+                      ),
+                      Text(
+                          "${transaction.paidBy == friendName ? friendName : "You"} paid ${transaction.amount}",
+                          textScaleFactor: 1,
+                          style: TextStyle(
+                            color: white.withOpacity(0.8),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+
+                      // Container(
+                      //   padding: const EdgeInsets.all(5),
+                      //   decoration: BoxDecoration(
+                      //     borderRadius: BorderRadius.circular(5),
+                      //     color: primary.withAlpha(70),
+                      //   ),
+                      //   child: Text(
+                      //     "etgdrh",
+                      //     // transaction.category,
+                      //     textScaleFactor: 1.2,
+                      //     style: const TextStyle(
+                      //       color: white,
+                      //     ),
+                      //   ),
+                      // ),
                       const SizedBox(
                         height: 5,
                       ),
-                      Text(
-                        "${"${transaction.transactionDate.day} " + textMonth(transaction.transactionDate.month)} ${transaction.transactionDate.year}",
-                        style: const TextStyle(
-                          color: white,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            "${"${transaction.transactionDate.day} " + textMonth(transaction.transactionDate.month)} ${transaction.transactionDate.year}",
+                            style: TextStyle(
+                              color: white.withOpacity(0.8),
+                            ),
+                          ),
+                          SizedBox(
+                            width: width * 3,
+                          ),
+                          InkWell(
+                            // onTap: () =>
+                            // Navigator.of(context).push(MaterialPageRoute(
+                            // builder: (_) => EditTransactionCard(
+                            // transaction: transaction,
+                            // ))),
+                            child: Icon(
+                              FontAwesomeIcons.pen,
+                              color: white,
+                              size: width * 4,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                   Flexible(flex: 1, child: Container()),
-                  Row(
-                    children: [
-                      InkWell(
-                        // onTap: () =>
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        // builder: (_) => EditTransactionCard(
-                        // transaction: transaction,
-                        // ))),
-                        child: Icon(
-                          FontAwesomeIcons.pen,
-                          color: white,
-                        ),
-                      ),
-                      // InkWell(
-                      //   child: Icon(
-                      //     Icons.delete,
-                      //     color: white,
-                      //   ),
-                      // )
-                    ],
-                  ),
                   SizedBox(
                     width: width * 3,
                   ),
                   Container(
                     width: width * 20,
                     height: width * 20,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      shape: BoxShape.rectangle,
-                      color: (transaction.amount >= 0) ? green : red,
-                    ),
-                    child: Center(
-                      child: Text(
-                        (transaction.amount >= 0)
-                            ? "+${transaction.amount}"
-                            : transaction.amount.toString(),
-                        textScaleFactor: 1.2,
-                        style: const TextStyle(
-                          color: white,
+                    // decoration: BoxDecoration(
+                    //   borderRadius: BorderRadius.circular(20),
+                    //   shape: BoxShape.rectangle,
+                    //   color: (transaction.paidBy == friendName) ? red : green,
+                    // ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          height: width * 3,
                         ),
-                      ),
+                        Text(
+                          (transaction.paidBy != friendName)
+                              ? "you lent"
+                              : "you borrowed",
+                          textScaleFactor: 0.8,
+                          style: TextStyle(
+                            color: (transaction.paidBy != friendName)
+                                ? green
+                                : red,
+                          ),
+                        ),
+                        SizedBox(
+                          height: width * 2,
+                        ),
+                        Text(
+                          transaction.shareOfBorrower.toString(),
+                          textScaleFactor: 1.2,
+                          style: TextStyle(
+                            color: (transaction.paidBy != friendName)
+                                ? green
+                                : red,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

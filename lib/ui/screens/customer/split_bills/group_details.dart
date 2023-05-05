@@ -62,7 +62,7 @@ class _GroupDetailsState extends State<GroupDetails> {
                         ),
                         child: Image.asset(
                           // widget.cUser.backCoverImg
-                          'assets/greenbg.jpg',
+                          'assets/greenbg.png',
                           height: _width * 50,
                           width: _width * 100,
                           fit: BoxFit.cover,

@@ -5,6 +5,7 @@ import '../../../models/transaction.dart';
 import '../../../utils/colors.dart';
 import '../../../widgets/bill_split_transaction.dart';
 import '../../../widgets/glassmorphic_container.dart';
+import 'new_bill_split_page.dart';
 import 'split_bills.dart';
 
 class FriendDetails extends StatefulWidget {
@@ -33,101 +34,113 @@ class _FriendDetailsState extends State<FriendDetails> {
 
     List<BillSplitTransaction> transactions = [
       BillSplitTransaction(
-        id: "1",
-        fromFriend: "Alice",
-        toFriend: "Bob",
-        amount: 20.0,
-        remark: "Lunch at Cafe",
-        transactionDate: DateTime(2022, 4, 28),
-      ),
-      BillSplitTransaction(
-        id: "2",
-        fromFriend: "Bob",
-        toFriend: "Alice",
-        amount: 15.0,
-        remark: "Dinner at Restaurant",
-        transactionDate: DateTime(2022, 4, 29),
-      ),
-      BillSplitTransaction(
-        id: "3",
-        fromFriend: "Alice",
-        toFriend: "Bob",
-        amount: 10.0,
-        remark: "Movie tickets",
-        transactionDate: DateTime(2022, 5, 1),
-      ),
-      BillSplitTransaction(
-        id: "4",
-        fromFriend: "Bob",
-        toFriend: "Alice",
-        amount: 5.0,
-        remark: "Snacks at Cinema",
-        transactionDate: DateTime(2022, 5, 2),
-      ),
-      BillSplitTransaction(
-        id: "5",
-        fromFriend: "Alice",
-        toFriend: "Bob",
-        amount: 25.0,
-        remark: "Shopping at Mall",
-        transactionDate: DateTime(2022, 5, 3),
-      ),
-      BillSplitTransaction(
-        id: "6",
-        fromFriend: "Bob",
-        toFriend: "Alice",
-        amount: 12.0,
-        remark: "Coffee at Starbucks",
-        transactionDate: DateTime(2022, 5, 4),
-      ),
-      BillSplitTransaction(
-        id: "7",
-        fromFriend: "Alice",
-        toFriend: "Bob",
-        amount: 18.0,
-        remark: "Dinner at Home",
-        transactionDate: DateTime(2022, 5, 5),
-      ),
-      BillSplitTransaction(
-        id: "8",
-        fromFriend: "Bob",
-        toFriend: "Alice",
-        amount: 6.0,
-        remark: "Ice Cream at Parlor",
-        transactionDate: DateTime(2022, 5, 6),
-      ),
-      BillSplitTransaction(
-        id: "9",
-        fromFriend: "Alice",
-        toFriend: "Bob",
-        amount: 22.0,
-        remark: "Concert tickets",
-        transactionDate: DateTime(2022, 5, 7),
-      ),
-      BillSplitTransaction(
-        id: "10",
-        fromFriend: "Bob",
-        toFriend: "Alice",
-        amount: 8.0,
-        remark: "Donuts at Bakery",
-        transactionDate: DateTime(2022, 5, 8),
-      ),
-      BillSplitTransaction(
-        id: "11",
-        fromFriend: "Alice",
-        toFriend: "Bob",
+        id: '1',
+        shareOfPayer: 10.0,
+        shareOfBorrower: 20.0,
+        paidBy: 'Alice',
         amount: 30.0,
-        remark: "Weekend getaway",
-        transactionDate: DateTime(2022, 5, 9),
+        transactionDate: DateTime.now(),
+        remark: 'Lunch at the new restaurant',
       ),
       BillSplitTransaction(
-        id: "12",
-        fromFriend: "Bob",
-        toFriend: "Alice",
-        amount: 15.0,
-        remark: "Gas for Road trip",
-        transactionDate: DateTime(2022, 5, 10),
+        id: '2',
+        shareOfPayer: 15.0,
+        shareOfBorrower: 15.0,
+        paidBy: 'Bob',
+        amount: 30.0,
+        transactionDate: DateTime.now(),
+        remark: 'Movie tickets',
       ),
+      BillSplitTransaction(
+        id: '3',
+        shareOfPayer: 5.0,
+        shareOfBorrower: 25.0,
+        paidBy: 'Alice',
+        amount: 30.0,
+        transactionDate: DateTime.now(),
+        remark: 'Coffee and snacks',
+      ),
+      BillSplitTransaction(
+        id: '4',
+        shareOfPayer: 12.5,
+        shareOfBorrower: 12.5,
+        paidBy: 'Bob',
+        amount: 25.0,
+        transactionDate: DateTime.now(),
+        remark: 'Dinner at the Italian restaurant',
+      ),
+      BillSplitTransaction(
+        id: '5',
+        shareOfPayer: 20.0,
+        shareOfBorrower: 10.0,
+        paidBy: 'Alice',
+        amount: 30.0,
+        transactionDate: DateTime.now(),
+        remark: 'Drinks at the rooftop bar',
+      ),
+      BillSplitTransaction(
+        id: '6',
+        shareOfPayer: 7.0,
+        shareOfBorrower: 23.0,
+        paidBy: 'Bob',
+        amount: 30.0,
+        transactionDate: DateTime.now(),
+        remark: 'Shopping at the mall',
+      ),
+      BillSplitTransaction(
+        id: '7',
+        shareOfPayer: 15.0,
+        shareOfBorrower: 15.0,
+        paidBy: 'Alice',
+        amount: 30.0,
+        transactionDate: DateTime.now(),
+        remark: 'Concert tickets',
+      ),
+      BillSplitTransaction(
+        id: '8',
+        shareOfPayer: 10.0,
+        shareOfBorrower: 20.0,
+        paidBy: 'Bob',
+        amount: 30.0,
+        transactionDate: DateTime.now(),
+        remark: 'Brunch at the cafe',
+      ),
+      BillSplitTransaction(
+        id: '9',
+        shareOfPayer: 18.0,
+        shareOfBorrower: 12.0,
+        paidBy: 'Alice',
+        amount: 30.0,
+        transactionDate: DateTime.now(),
+        remark: 'Spa session',
+      ),
+      BillSplitTransaction(
+        id: '10',
+        shareOfPayer: 25.0,
+        shareOfBorrower: 5.0,
+        paidBy: 'Bob',
+        amount: 30.0,
+        transactionDate: DateTime.now(),
+        remark: 'Skydiving experience',
+      ),
+      BillSplitTransaction(
+        id: '11',
+        shareOfPayer: 10.0,
+        shareOfBorrower: 20.0,
+        paidBy: 'Alice',
+        amount: 30.0,
+        transactionDate: DateTime.now(),
+        remark: 'Visiting the art museum',
+      ),
+      BillSplitTransaction(
+        id: '12',
+        shareOfPayer: 22.0,
+        shareOfBorrower: 8.0,
+        paidBy: 'Bob',
+        amount: 30.0,
+        transactionDate: DateTime.now(),
+        remark: 'Kuchbhi',
+      )
     ];
 
     return Scaffold(
@@ -164,7 +177,7 @@ class _FriendDetailsState extends State<FriendDetails> {
                         ),
                         child: Image.asset(
                           // widget.cUser.backCoverImg
-                          'assets/greenbg.jpg',
+                          'assets/greenbg.png',
                           height: _width * 50,
                           width: _width * 100,
                           fit: BoxFit.cover,
@@ -213,20 +226,30 @@ class _FriendDetailsState extends State<FriendDetails> {
                   ),
                 ],
               ),
-              Text(
-                widget.friend.name,
-                textScaleFactor: 1.5,
-                style: const TextStyle(
-                  color: white,
-                ),
-              ),
-              Text(
-                (widget.friend.totalBalance >= 0)
-                    ? 'You owe ${widget.friend.name} ${widget.friend.totalBalance.toStringAsFixed(2)}'
-                    : '${widget.friend.name} owes you ${widget.friend.totalBalance.toStringAsFixed(2)}',
-                textScaleFactor: 1.2,
-                style: TextStyle(
-                  color: (widget.friend.totalBalance >= 0) ? green : red,
+              Container(
+                padding: EdgeInsets.only(left: _width * 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.friend.name,
+                      textScaleFactor: 1.5,
+                      style: const TextStyle(
+                        color: white,
+                      ),
+                    ),
+                    Text(
+                      (widget.friend.totalBalance == 0)
+                          ? 'All settled up'
+                          : (widget.friend.totalBalance < 0)
+                              ? 'You owe ${widget.friend.name} ${widget.friend.totalBalance.toStringAsFixed(2)}'
+                              : '${widget.friend.name} owes you ${widget.friend.totalBalance.toStringAsFixed(2)}',
+                      textScaleFactor: 1.2,
+                      style: TextStyle(
+                        color: (widget.friend.totalBalance >= 0) ? green : red,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
@@ -236,12 +259,10 @@ class _FriendDetailsState extends State<FriendDetails> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   InkWell(
-                    // onTap: () {
-                    //   Navigator.of(context).push(MaterialPageRoute(
-                    //       builder: (_) => CreateNewExpense(
-                    //             isExpense: false,
-                    //           )));
-                    // },
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => NewBillSplitPage()));
+                    },
                     child: Container(
                       height: _width * 15,
                       width: _width * 40,
@@ -285,9 +306,16 @@ class _FriendDetailsState extends State<FriendDetails> {
                   ),
                 ],
               ),
+              SizedBox(
+                height: _width * 5,
+              ),
               for (var t in transactions) ...{
                 BillSplitTransactionBox(
                   transaction: t,
+                  friendName: widget.friend.name,
+                ),
+                SizedBox(
+                  height: _width * 5,
                 ),
               }
             ],

@@ -142,7 +142,7 @@ class _UserProfileState extends State<UserProfile> {
                           ),
                           child: Image.asset(
                             // widget.cUser.backCoverImg
-                            'assets/greenbg.jpg',
+                            'assets/greenbg.png',
                             height: _width * 50,
                             width: _width * 100,
                             fit: BoxFit.cover,
@@ -190,7 +190,8 @@ class _UserProfileState extends State<UserProfile> {
                               // ),
                               Image.network(
                             // svg.toString(),
-                            'https://picsum.photos/200',
+                            // 'https://picsum.photos/200',
+                            'https://source.boringavatars.com/bauhaus',
                             // widget.friend.photoUrl,
                             height: _width * 80,
                             width: _width * 80,
