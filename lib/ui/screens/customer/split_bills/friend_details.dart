@@ -5,6 +5,7 @@ import '../../../models/transaction.dart';
 import '../../../utils/colors.dart';
 import '../../../widgets/bill_split_transaction.dart';
 import '../../../widgets/glassmorphic_container.dart';
+import 'friend_settle_up.dart';
 import 'new_bill_split_page.dart';
 import 'split_bills.dart';
 
@@ -261,7 +262,7 @@ class _FriendDetailsState extends State<FriendDetails> {
                   InkWell(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => NewBillSplitPage()));
+                          builder: (_) => const NewBillSplitPage()));
                     },
                     child: Container(
                       height: _width * 15,
@@ -287,6 +288,8 @@ class _FriendDetailsState extends State<FriendDetails> {
                     //             isExpense: true,
                     //           )));
                     // },
+                    onTap: () => showDialog(
+                        context: context, builder: (_) => const SettleUpWithFriend()),
                     child: Container(
                       height: _width * 15,
                       width: _width * 40,

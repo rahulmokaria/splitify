@@ -1,13 +1,13 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../../../utils/colors.dart';
-import '../../../widgets/text_field_ui.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../utils/colors.dart';
+import '../../../widgets/text_field_ui.dart';
 import '../../../widgets/show_snackbar.dart';
 
 class CreateNewExpense extends StatefulWidget {
@@ -123,10 +123,8 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
     try {
       String transactionType = "";
       if (widget.isExpense) {
-        cat = "Food";
         transactionType = "Expense";
       } else {
-        cat = "Salary";
         transactionType = "Income";
       }
       String? value = await storage.read(key: "authtoken");

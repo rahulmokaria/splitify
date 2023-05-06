@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:splitify/ui/screens/customer/expense_tracker/edit_transaction_popup.dart';
 
 import '../models/transaction.dart';
+import '../screens/customer/split_bills/edit_bill_split_page.dart';
 import '../utils/colors.dart';
 import 'glassmorphic_container.dart';
 
@@ -121,6 +122,14 @@ class BillSplitTransactionBox extends StatelessWidget {
                             // builder: (_) => EditTransactionCard(
                             // transaction: transaction,
                             // ))),
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => EditBillSplitPage(
+                                  friendName: friendName,
+                                  billSplitTransaction: transaction,
+                                ),
+                              ),
+                            ),
                             child: Icon(
                               FontAwesomeIcons.pen,
                               color: white,

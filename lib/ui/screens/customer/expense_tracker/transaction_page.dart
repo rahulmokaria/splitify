@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../../../models/transaction.dart';
-import '../../../utils/colors.dart';
-import '../../../widgets/transaction_details_box.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import '../../../widgets/show_snackbar.dart';
 import 'package:intl/intl.dart';
+
+import '../../../models/transaction.dart';
+import '../../../utils/colors.dart';
+import '../../../widgets/transaction_details_box.dart';
+import '../../../widgets/show_snackbar.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({Key? key}) : super(key: key);
