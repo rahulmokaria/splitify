@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:splitify/ui/screens/customer/expense_tracker/expense_tracker.dart';
-import 'package:splitify/ui/screens/customer/split_bills/split_bills.dart';
 
 import '../../utils/colors.dart';
 import '../../widgets/show_snackbar.dart';
-
+import 'expense_tracker/expense_tracker.dart';
+import 'split_bills/split_bills.dart';
 import 'user_profile_page.dart';
 
 class CusHomePage extends StatefulWidget {

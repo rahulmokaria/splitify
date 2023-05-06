@@ -1,21 +1,16 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:glassmorphism/glassmorphism.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:splitify/ui/screens/customer/expense_tracker/transaction_page.dart';
-import '../../../utils/colors.dart';
-import '../../../widgets/glassmorphic_container.dart';
-import '../../../widgets/pie_chart.dart';
-import 'new_expense.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../utils/colors.dart';
+import '../../../widgets/glassmorphic_container.dart';
+import '../../../widgets/pie_chart.dart';
 import '../../../widgets/show_snackbar.dart';
+import 'new_expense.dart';
 import 'transaction_page.dart';
 
 class ExpenseTracker extends StatefulWidget {

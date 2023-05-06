@@ -2,15 +2,13 @@ import 'dart:math';
 
 // import 'package:dice_bear/dice_bear.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:splitify/ui/screens/customer/split_bills/add_friend_page.dart';
-import 'package:splitify/ui/screens/customer/split_bills/friend_details.dart';
-import 'package:splitify/ui/utils/colors.dart';
 
+import '../../../utils/colors.dart';
 import '../../../widgets/glassmorphic_container.dart';
+import 'add_friend_page.dart';
 import 'add_group_page.dart';
+import 'friend_details.dart';
 import 'group_details.dart';
 
 class SplitBillsPage extends StatefulWidget {

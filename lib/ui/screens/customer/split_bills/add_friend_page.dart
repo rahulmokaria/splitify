@@ -1,11 +1,9 @@
 import 'package:contacts_service/contacts_service.dart';
-// import 'package:dice_bear/dice_bear.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:splitify/ui/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../utils/colors.dart';
 
 class AddFriendPage extends StatefulWidget {
   const AddFriendPage({super.key});
