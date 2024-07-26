@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../utils/colors.dart';
 
-TextFormField textFieldUi(
+TextField textFieldUi(
     {required String text,
     required IconData icon,
     required bool isPasswordType,
     required Color textColor,
     required TextEditingController controller,
     required TextInputType inputType}) {
-  return TextFormField(
+  return TextField(
     controller: controller,
     obscureText: isPasswordType,
     cursorColor: textColor,
@@ -27,17 +27,17 @@ TextFormField textFieldUi(
       fillColor: white.withOpacity(0.2),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(30),
-        borderSide: const BorderSide(width: 0, style: BorderStyle.none),
+        borderSide: const BorderSide(width: 1, style: BorderStyle.none),
       ),
     ),
-    validator: (value) {
-      if (value!.isEmpty) {
-        print('empty');
-        return "Field cannot be empty";
-      } else {
-        print('pappu pass');
-        return null;
-      }
-    },
+    // validator: (value) {
+    //   if (value!.isEmpty) {
+    //     // print('empty');
+    //     return "Field cannot be empty";
+    //   } else {
+    //     // print('pappu pass');
+    //     return null;
+    //   }
+    // },
   );
 }

@@ -6,7 +6,7 @@ const Color secondary = Color(0xff0e0b16);
 const Color secondaryLight = Color.fromARGB(255, 33, 17, 58);
 
 Color green = const Color(0xff41dfa3);
-Color pink = const Color(0xffffe7ce3);
+Color pink = const Color(0xffff7ce3);
 Color purple = const Color(0xffb67cff);
 Color yellow = const Color(0xfffaf3dd);
 Color blue = const Color(0xffa2efea);
