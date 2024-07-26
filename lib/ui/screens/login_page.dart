@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
+// import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -25,7 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordTextController = TextEditingController();
   final TextEditingController _emailTextController = TextEditingController();
 
-  bool isShopkeeper = false;
   bool _isLoading = false;
 
   loginUser() async {
@@ -37,305 +36,299 @@ class _LoginPageState extends State<LoginPage> {
       var email = _emailTextController.text;
       var password = _passwordTextController.text;
       String endPoint = dotenv.env["URL"].toString();
-      if (isShopkeeper) {
-        var response = await http.post(
-            Uri.parse(endPoint + "/api/shopkeeper/login"),
-            body: {"email": email.toString(), "password": password.toString()});
-        var res = jsonDecode(response.body) as Map<String, dynamic>;
-        if (!res['flag']) {
-          return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            ctype: ContentType.failure,
-            message: res['message'],
-          ));
-        } else {
-          await storage.write(key: "authtoken", value: res['message']);
-          String? value = await storage.read(key: "authtoken");
-          return gotoHome();
-        }
+      // print(endPoint);
+
+      // var response = await http.post(Uri.parse(endPoint + '/'));
+
+      var response = await http.post(Uri.parse("$endPoint/authApi/login"),
+          body: {"email": email.toString(), "password": password.toString()});
+      // print(response.body);
+      var res = jsonDecode(response.body) as Map<String, dynamic>;
+      // print(response);
+      if (!res['flag']) {
+        if (!mounted) return;
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          ctype: ContentType.failure,
+          message: res['message'],
+        ));
       } else {
-        var response = await http.post(Uri.parse(endPoint + "/api/user/login"),
-            body: {"email": email.toString(), "password": password.toString()});
-        var res = jsonDecode(response.body) as Map<String, dynamic>;
-        if (!res['flag']) {
-          return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            ctype: ContentType.failure,
-            message: res['message'],
-          ));
-        } else {
-          await storage.write(key: "authtoken", value: res['message']);
-          String? value = await storage.read(key: "authtoken");
-          return gotoHome();
-        }
+        // print(res['message']);
+        await storage.write(key: "authtoken", value: res['message']);
+        // String? value = await storage.read(key: "authtoken");
+        return gotoHome();
       }
     } catch (e) {
+      // print("Login error: $e");
+      setState(() {
+        _isLoading = false;
+      });
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
         ctype: ContentType.failure,
-        message: "Error at registersation.Please contact admin to resolve",
+        message: "Error at registersation. Please contact admin to resolve",
       ));
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   void gotoHome() {
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const CusHomePage()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (_) => HomePage(
+              currentIndex: 0,
+            )));
   }
 
   @override
   Widget build(BuildContext context) {
-    var _width = MediaQuery.of(context).size.width / 100;
-    var _height = MediaQuery.of(context).size.height / 100;
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: secondary,
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                'assets/signupbg1.png',
-              ),
-              fit: BoxFit.cover,
+    var width = MediaQuery.of(context).size.width / 100;
+    // var _height = MediaQuery.of(context).size.height / 100;
+    // return SafeArea(
+    // child: Scaffold(
+    return Scaffold(
+      backgroundColor: secondary,
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+              'assets/signupbg1.png',
             ),
-            // color: secondary,
+            fit: BoxFit.cover,
           ),
-          child: Column(
-            children: [
-              Flexible(
-                flex: 5,
-                child: Container(),
+          color: secondary,
+        ),
+        child: Column(
+          children: [
+            Flexible(
+              flex: 7,
+              child: Container(),
+            ),
+            //login
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(
+                left: width * 10,
               ),
-              //login
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(
-                  left: _width * 10,
+              child: Text(
+                "Login",
+                // textScaleFactor: 3,
+                textScaler: const TextScaler.linear(3),
+                style: TextStyle(
+                  color: primary,
                 ),
-                child: Text(
-                  "Login",
-                  textScaleFactor: 3,
-                  style: TextStyle(
-                    color: primary,
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Container(),
+            ),
+            //customer/shopkeeper
+            // Container(
+            //   height: width * 15,
+            //   padding: EdgeInsets.all(width * 2),
+            //   margin: EdgeInsets.only(left: width * 4, right: width * 4),
+            //   decoration: BoxDecoration(
+            //     color: Colors.white.withOpacity(0.2),
+            //     borderRadius: BorderRadius.circular(20),
+            //   ),
+            //   child: Container(
+            //     decoration:
+            //         BoxDecoration(borderRadius: BorderRadius.circular(20)),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       children: [
+            //         Container(
+            //           width: width * 40,
+            //           decoration: BoxDecoration(
+            //             borderRadius: BorderRadius.circular(10),
+            //             color: !isShopkeeper
+            //                 ? primary.withOpacity(0.8)
+            //                 : secondary.withOpacity(0),
+            //           ),
+            //           height: width * 9,
+            //           child: InkWell(
+            //             onTap: () {
+            //               setState(() {
+            //                 isShopkeeper = false;
+            //               });
+            //             },
+            //             child: Center(
+            //               child: Text(
+            //                 'Customer',
+            //                 textScaleFactor: !isShopkeeper ? 1.45 : 1.3,
+            //                 style: TextStyle(
+            //                   color: !isShopkeeper ? secondary : primary,
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //         SizedBox(
+            //           width: width * 1,
+            //         ),
+            //         Container(
+            //           width: MediaQuery.of(context).size.width * 0.42,
+            //           decoration: BoxDecoration(
+            //             borderRadius: BorderRadius.circular(10),
+            //             color: isShopkeeper
+            //                 ? primary.withOpacity(0.8)
+            //                 : secondary.withOpacity(0),
+            //           ),
+            //           height: width * 9,
+            //           child: InkWell(
+            //             onTap: () {
+            //               setState(() {
+            //                 isShopkeeper = true;
+            //               });
+            //             },
+            //             child: Center(
+            //               child: Text(
+            //                 'Shopkeeper',
+            //                 textScaleFactor: isShopkeeper ? 1.45 : 1.3,
+            //                 style: TextStyle(
+            //                   color: isShopkeeper ? secondary : primary,
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //         )
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // Flexible(
+            //   flex: 1,
+            //   child: Container(),
+            // ),
+            //email
+            Container(
+              margin: EdgeInsets.only(left: width * 4, right: width * 4),
+              child: textFieldUi(
+                  text: 'Email',
+                  icon: FontAwesomeIcons.solidUser,
+                  textColor: primary,
+                  isPasswordType: false,
+                  controller: _emailTextController,
+                  inputType: TextInputType.emailAddress),
+            ),
+            Flexible(
+              flex: 1,
+              child: Container(),
+            ),
+
+            //password
+            Container(
+              margin: EdgeInsets.only(left: width * 4, right: width * 4),
+              child: textFieldUi(
+                  text: 'Password',
+                  icon: FontAwesomeIcons.lock,
+                  textColor: primary,
+                  isPasswordType: true,
+                  controller: _passwordTextController,
+                  inputType: TextInputType.visiblePassword),
+            ),
+            Container(
+              margin: EdgeInsets.only(left: width * 4, right: width * 4),
+              child: TextButton(
+                onPressed: () {
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (_) => const ForgotPasswordPage(),
+                  //   ),
+                  // );
+                },
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    'Forgot Password',
+                    style: TextStyle(
+                      color: primary,
+                    ),
                   ),
                 ),
               ),
-              Flexible(
-                flex: 3,
-                child: Container(),
-              ),
-              //customer/shopkeeper
-              Container(
-                height: _width * 15,
-                padding: EdgeInsets.all(_width * 2),
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
+            ),
+            //forgotpassword
+            Flexible(
+              flex: 1,
+              child: Container(),
+            ),
+            //login button
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: width * 15,
+              margin: EdgeInsets.only(left: width * 4, right: width * 4),
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(90)),
+              child: ElevatedButton(
+                onPressed: () => loginUser(),
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.pressed)) {
+                      return secondary;
+                    }
+                    return primary.withOpacity(0.8);
+                  }),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(width * 28))),
                 ),
-                child: Container(
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: _width * 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: !isShopkeeper
-                              ? primary.withOpacity(0.8)
-                              : secondary.withOpacity(0),
-                        ),
-                        height: _width * 9,
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isShopkeeper = false;
-                            });
-                          },
-                          child: Center(
-                            child: Text(
-                              'Customer',
-                              textScaleFactor: !isShopkeeper ? 1.45 : 1.3,
-                              style: TextStyle(
-                                color: !isShopkeeper ? secondary : primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: _width * 1,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.42,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: isShopkeeper
-                              ? primary.withOpacity(0.8)
-                              : secondary.withOpacity(0),
-                        ),
-                        height: _width * 9,
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isShopkeeper = true;
-                            });
-                          },
-                          child: Center(
-                            child: Text(
-                              'Shopkeeper',
-                              textScaleFactor: isShopkeeper ? 1.45 : 1.3,
-                              style: TextStyle(
-                                color: isShopkeeper ? secondary : primary,
-                              ),
-                            ),
-                          ),
+                child: _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: white,
                         ),
                       )
-                    ],
-                  ),
-                ),
-              ),
-              Flexible(
-                flex: 1,
-                child: Container(),
-              ),
-              //email
-              Container(
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi(
-                    text: 'Email',
-                    icon: FontAwesomeIcons.solidUser,
-                    textColor: primary,
-                    isPasswordType: false,
-                    controller: _emailTextController,
-                    inputType: TextInputType.emailAddress),
-              ),
-              Flexible(
-                flex: 1,
-                child: Container(),
-              ),
-
-              //password
-              Container(
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: textFieldUi(
-                    text: 'Password',
-                    icon: FontAwesomeIcons.lock,
-                    textColor: primary,
-                    isPasswordType: true,
-                    controller: _passwordTextController,
-                    inputType: TextInputType.visiblePassword),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                child: TextButton(
-                  onPressed: () {
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (_) => const ForgotPasswordPage(),
-                    //   ),
-                    // );
-                  },
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      'Forgot Password',
-                      style: TextStyle(
-                        color: primary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              //forgotpassword
-              Flexible(
-                flex: 1,
-                child: Container(),
-              ),
-              //login button
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: _width * 15,
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(90)),
-                child: ElevatedButton(
-                  onPressed: () => loginUser(),
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.pressed)) {
-                        return secondary;
-                      }
-                      return primary.withOpacity(0.8);
-                    }),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(_width * 28))),
-                  ),
-                  child: _isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: white,
-                          ),
-                        )
-                      : const Text(
-                          "Login",
-                          style: TextStyle(
-                            color: secondary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                    : const Text(
+                        "Login",
+                        style: TextStyle(
+                          color: secondary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
+                      ),
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Container(),
+            ),
+            //signup
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Don't have an account?",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: white,
+                  ),
                 ),
-              ),
-              Flexible(
-                flex: 1,
-                child: Container(),
-              ),
-              //signup
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Don't have an account?",
+                TextButton(
+                  // onPressed: openSignUp,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const SignUpPage(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Sign Up",
                     style: TextStyle(
                       fontSize: 18,
-                      color: white,
+                      color: primary,
                     ),
                   ),
-                  TextButton(
-                    // onPressed: openSignUp,
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const SignUpPage(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: primary,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Flexible(
-                flex: 1,
-                child: Container(),
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            Flexible(
+              flex: 1,
+              child: Container(),
+            ),
+          ],
         ),
       ),
+      // ),
     );
   }
 }
