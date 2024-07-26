@@ -1,31 +1,33 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
-import 'package:splitify/ui/models/transaction.dart';
-
-import '../../utils/colors.dart';
-import '../../widgets/text_field_ui.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import '../../widgets/show_snackbar.dart';
-import 'transaction_page.dart';
+
+import '../../../models/transaction.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/text_month.dart';
+import '../../../widgets/text_field_ui.dart';
+import '../../../widgets/show_snackbar.dart';
+import '../home_page.dart';
 
 class EditTransactionCard extends StatefulWidget {
-  UserTransaction transaction;
+  final UserTransaction transaction;
 
-  EditTransactionCard({
+  const EditTransactionCard({
     Key? key,
     required this.transaction,
   }) : super(key: key);
 
   @override
-  _EditTransactionCardState createState() => _EditTransactionCardState();
+  EditTransactionCardState createState() => EditTransactionCardState();
 }
 
-class _EditTransactionCardState extends State<EditTransactionCard> {
-  TextEditingController _amountController = TextEditingController();
-  TextEditingController _remarkController = TextEditingController();
+class EditTransactionCardState extends State<EditTransactionCard> {
+  TextEditingController amountController = TextEditingController();
+  TextEditingController remarkController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -40,13 +42,13 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
               splashColor: secondary,
               colorScheme: ColorScheme.light(
                 primary: secondaryLight, // <-- SEE HERE
-                background: secondary,
+                surface: secondary,
                 onPrimary: purple, // <-- SEE HERE
-                // onSurface: white.withOpacity(0.6), // <-- SEE HERE
+                onSurface: white.withOpacity(0.6), // <-- SEE HERE
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: purple, // button text color
+                  foregroundColor: purple, // button text color
                 ),
               ),
             ),
@@ -56,37 +58,8 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
     if (picked != null && picked != widget.transaction.transactionDate) {
       setState(() {
         widget.transaction.transactionDate = picked;
-        print(widget.transaction.transactionDate);
+        // print(widget.transaction.transactionDate);
       });
-    }
-  }
-
-  textMonth(num month) {
-    switch (month) {
-      case 1:
-        return "January";
-      case 2:
-        return "February";
-      case 3:
-        return "March";
-      case 4:
-        return "April";
-      case 5:
-        return "May";
-      case 6:
-        return "June";
-      case 7:
-        return "July";
-      case 8:
-        return "August";
-      case 9:
-        return "September";
-      case 10:
-        return "October";
-      case 11:
-        return "November";
-      case 12:
-        return "December";
     }
   }
 
@@ -118,79 +91,88 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
   @override
   void initState() {
     super.initState();
-    _amountController.text = widget.transaction.amount.toString();
+    amountController.text = widget.transaction.amount.toString();
 
-    _remarkController.text = widget.transaction.remark;
+    remarkController.text = widget.transaction.remark;
     dropdownValue = widget.transaction.category;
     categories =
         widget.transaction.amount < 0 ? categoriesExpense : categoriesIncome;
   }
-  deletetransaction()async{
+
+  deletetransaction() async {
     String endPoint = dotenv.env["URL"].toString();
-    final storage = new FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     try {
       String? value = await storage.read(key: "authtoken");
-      var response = await http.post(Uri.parse(endPoint + "/api/user/deletetransaction"), body: {
+      var response = await http
+          .post(Uri.parse("$endPoint/transactionApi/deleteTransaction"), body: {
         "token": value,
         "id": widget.transaction.transactionId,
       });
+      // print(response.body);
       var res = jsonDecode(response.body) as Map<String, dynamic>;
+
       if (res['flag']) {
+        if (!mounted) return;
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (_) => HomePage()));
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            res['message'],
-            "Keep Enjoying",
-            green,
-            Icons.close));
-      }
-      else{
-         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            res['message'],
-            "Please contact admin to resolve",
-            pink,
-            Icons.close));
+          ctype: ContentType.success,
+          message: res['message'] + ". Keep Enjoying",
+        ));
+      } else {
+        if (!mounted) return;
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          ctype: ContentType.failure,
+          message: res['message'] + "Please contact admin to resolve",
+        ));
       }
     } catch (e) {
+      // print("delete transaction error: " + e.toString());
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          e.toString(), "Please contact admin to resolve", pink, Icons.close));
+        ctype: ContentType.failure,
+        message: "${e}Please contact admin to resolve",
+      ));
     }
-   }
-
+  }
 
   editdata() async {
     String endPoint = dotenv.env["URL"].toString();
-    final storage = new FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     try {
       String? value = await storage.read(key: "authtoken");
       var date = widget.transaction.transactionDate;
       date = DateTime.parse(date.toString());
       var formattedDate = "${date.day}/${date.month}/${date.year}";
       var response = await http
-          .post(Uri.parse(endPoint + "/api/user/edittransaction"), body: {
+          .post(Uri.parse("$endPoint/transactionApi/editTransaction"), body: {
         "token": value,
         "id": widget.transaction.transactionId,
-        "addamount": _amountController.text,
-        "description": _remarkController.text,
+        "addAmount": amountController.text,
+        "description": remarkController.text,
         "category": dropdownValue,
         "date": formattedDate
       });
       var res = jsonDecode(response.body) as Map<String, dynamic>;
       if (res['flag']) {
+        if (!mounted) return;
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            res['message'],
-            "Keep Enjoying",
-            green,
-            Icons.close));
-      }
-      else{
-         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            res['message'],
-            "Please contact admin to resolve",
-            pink,
-            Icons.close));
+          ctype: ContentType.success,
+          message: res['message'] + "Keep Enjoying",
+        ));
+      } else {
+        if (!mounted) return;
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          ctype: ContentType.failure,
+          message: res['message'] + "Please contact admin to resolve",
+        ));
       }
     } catch (e) {
+      // print("Edit transaction error: " + e.toString());
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          e.toString(), "Please contact admin to resolve", pink, Icons.close));
+        ctype: ContentType.failure,
+        message: "${e}Please contact admin to resolve",
+      ));
     }
   }
 
@@ -208,7 +190,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
 
   contentBox(context) {
     double width = MediaQuery.of(context).size.width * 0.01;
-    double height = MediaQuery.of(context).size.height * 0.01;
+    // double height = MediaQuery.of(context).size.height * 0.01;
     return Stack(
       children: <Widget>[
         Container(
@@ -234,10 +216,10 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                 // padding: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Amount',
-                    icon: Icons.wallet,
+                    icon: FontAwesomeIcons.wallet,
                     textColor: purple,
                     isPasswordType: false,
-                    controller: _amountController,
+                    controller: amountController,
                     inputType: TextInputType.number),
               ),
               SizedBox(height: width * 5),
@@ -254,7 +236,8 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       style: TextStyle(
                         color: purple,
                       ),
-                      textScaleFactor: 1.2,
+                      // textScaleFactor: 1.2,
+                      textScaler: const TextScaler.linear(1.2),
                     ),
                     SizedBox(
                       width: width * 3,
@@ -269,7 +252,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                           value: value,
                           child: Flexible(
                             child: Text(value,
-                                textScaleFactor: 1,
+                                // textScaleFactor: 1,
                                 style: TextStyle(
                                   color: purple,
                                 ),
@@ -289,9 +272,9 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                         dropdownValue = newValue!;
 
                         setState(() {});
-                        print(dropdownValue);
+                        // print(dropdownValue);
                       },
-                      icon: const Icon(Icons.keyboard_arrow_down),
+                      icon: const Icon(FontAwesomeIcons.chevronDown),
                       style: TextStyle(
                         color: purple,
                       ),
@@ -304,10 +287,10 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                 // margin: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Description',
-                    icon: Icons.menu,
+                    icon: FontAwesomeIcons.bars,
                     textColor: purple,
                     isPasswordType: false,
-                    controller: _remarkController,
+                    controller: remarkController,
                     inputType: TextInputType.streetAddress),
               ),
               SizedBox(height: width * 5),
@@ -326,13 +309,14 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                         style: TextStyle(
                           color: purple,
                         ),
-                        textScaleFactor: 1.2,
+                        // textScaleFactor: 1.2,
+                        textScaler: const TextScaler.linear(1.2),
                       ),
                       const SizedBox(
                         width: 20,
                       ),
                       Text(
-                        "${widget.transaction.transactionDate.day.toString() + " " + textMonth(widget.transaction.transactionDate.month)} ${widget.transaction.transactionDate.year}",
+                        "${widget.transaction.transactionDate.day} ${textMonth(widget.transaction.transactionDate.month)} ${widget.transaction.transactionDate.year}",
                         style: TextStyle(
                           color: purple,
                         ),
@@ -350,8 +334,10 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: white.withOpacity(0.2),
-                      onPrimary: Colors.white,
+                      backgroundColor: white.withOpacity(0.2),
+                      foregroundColor: Colors.white,
+                      // primary: white.withOpacity(0.2),
+                      // onPrimary: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -361,7 +347,7 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                   SizedBox(width: width * 2.5),
                   ElevatedButton(
                     onPressed: () {
-                      //TODO: implement edit transaction functionality
+                      //implement edit transaction functionality
                       editdata();
                       // Navigator.of(context).popUntil(( context, MaterialPageRout));
                       // if(Navigator.canPop(context)) {
@@ -369,11 +355,13 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                       //   Navigator.pop(context);
                       // }
                       // Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>TransactionPage()));
-                       Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: white.withOpacity(0.2),
-                      onPrimary: Colors.white,
+                      backgroundColor: white.withOpacity(0.2),
+                      foregroundColor: Colors.white,
+                      // primary: white.withOpacity(0.2),
+                      // onPrimary: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -383,13 +371,15 @@ class _EditTransactionCardState extends State<EditTransactionCard> {
                   SizedBox(width: width * 2.5),
                   ElevatedButton(
                     onPressed: () {
-                      //TODO: implement edit transaction functionality
+                      // implement edit transaction functionality
                       deletetransaction();
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: white.withOpacity(0.2),
-                      onPrimary: red,
+                      backgroundColor: white.withOpacity(0.2),
+                      foregroundColor: Colors.white,
+                      // primary: white.withOpacity(0.2),
+                      // onPrimary: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),

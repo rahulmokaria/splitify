@@ -1,9 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+// import 'package:flutter/src/widgets/framework.dart';
+// import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../utils/colors.dart';
 import '../widgets/show_snackbar.dart';
@@ -28,8 +30,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _confirmPasswordTextController =
       TextEditingController();
   final TextEditingController _nameTextController = TextEditingController();
+  final TextEditingController _contactNumberTextController =
+      TextEditingController();
 
-  bool isShopkeeper = false;
   bool _isLoading = false;
   @override
   dispose() {
@@ -38,6 +41,7 @@ class _SignUpPageState extends State<SignUpPage> {
     _passwordTextController.dispose();
     _confirmPasswordTextController.dispose();
     _nameTextController.dispose();
+    _confirmPasswordTextController.dispose();
   }
 
   signUpUser() async {
@@ -45,76 +49,69 @@ class _SignUpPageState extends State<SignUpPage> {
       _isLoading = true;
     });
     void gotoLogin() {
-    Navigator.of(context)
-    .pushReplacement(MaterialPageRoute(builder: (_) => const LoginPage()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const LoginPage()));
     }
+
     try {
-        var email=_emailTextController.text;
-        var name=_nameTextController.text;
-        var password=_passwordTextController.text;
-        var confirmpassword=_confirmPasswordTextController.text;
+      var email = _emailTextController.text;
+      var name = _nameTextController.text;
+      var password = _passwordTextController.text;
+      var confirmpassword = _confirmPasswordTextController.text;
+      var contactNumber = _contactNumberTextController.text;
 
-        if(password!=confirmpassword){
-          return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Password not matching", "Password and confirm password is not matching", red, Icons.close));
-        }
-        String endPoint=dotenv.env["URL"].toString();
-        if(isShopkeeper){
-          var response=await http.post(Uri.parse(endPoint+"/api/shopkeeper/register"),
-          body:{
-            "email":email.toString(),
-            "name":name.toString(),
-            "password":password.toString()
-          });
-          var res=jsonDecode(response.body) as Map<String,dynamic>;
-          if(!res['flag']){
-            return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], res['message'], red, Icons.close));
-          }
-          else{
-            ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Successfully registered" , "You can login now", green, Icons.celebration));
-            return gotoLogin();
-          }
-        }
-        else{
-          var response=await http.post(Uri.parse(endPoint+"/api/user/register")
-          ,body:{
-            "email":email.toString(),
-            "name":name.toString(),
-            "password":password.toString()
-          });
-          var res=jsonDecode(response.body) as Map<String,dynamic>;
-          if(!res['flag']){
-            return  ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], res['message'], red, Icons.close));
-          }
-          else{
-            ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Successfully registered" , "You can login now", green, Icons.celebration));
-             return gotoLogin();
-          }
-        }
-        
+      if (password != confirmpassword) {
+        setState(() {
+          _isLoading = false;
+        });
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            ctype: ContentType.failure,
+            message: "Password and confirm password is not matching"));
+      }
+      String endPoint = dotenv.env["URL"].toString();
+      // print('tryint to register a new user');
+      var response =
+          await http.post(Uri.parse("$endPoint/authApi/register"), body: {
+        "email": email.toString(),
+        "name": name.toString(),
+        "password": password.toString(),
+        "contactNo": contactNumber.toString()
+      });
+      // print(response.body);
+      var res = jsonDecode(response.body) as Map<String, dynamic>;
+      if (!res['flag']) {
+        if (!mounted) return;
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+            ctype: ContentType.failure, message: res['message']));
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          ctype: ContentType.success,
+          message: "Successfully registered. You can login now",
+        ));
+        return gotoLogin();
+      }
     } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      // print("Sign up error: " + e.toString());
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              "Error at registersation", "Please contact admin to resolve", red, Icons.close));
+        ctype: ContentType.failure,
+        message: "Error at registersation. Please contact admin to resolve",
+      ));
     }
-   
-
-
-    setState(() {
-      _isLoading = false;
-    });
-
   }
 
   @override
   Widget build(BuildContext context) {
-    var _width = MediaQuery.of(context).size.width / 100;
-    var _height = MediaQuery.of(context).size.height / 100;
-    return SafeArea(
-      child: Scaffold(
+    var width = MediaQuery.of(context).size.width / 100;
+    // return SafeArea(
+      // child: Scaffold(
+      return Scaffold(
         backgroundColor: secondary,
         body: Container(
           decoration: const BoxDecoration(
@@ -134,11 +131,12 @@ class _SignUpPageState extends State<SignUpPage> {
               Container(
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.only(
-                  left: _width * 10,
+                  left: width * 10,
                 ),
                 child: Text(
                   "Sign Up",
-                  textScaleFactor: 3,
+                  // textScaleFactor: 3,
+                  textScaler: const TextScaler.linear(3),
                   style: TextStyle(
                     color: primary,
                   ),
@@ -149,89 +147,13 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Container(),
               ),
               //customer/shopkeeper
-              Container(
-                padding: EdgeInsets.all(_width * 2),
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Container(
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: _width * 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: !isShopkeeper
-                              ? primary.withOpacity(0.8)
-                              : secondary.withOpacity(0),
-                        ),
-                        height: _width * 9,
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isShopkeeper = false;
-                            });
-                          },
-                          child: Center(
-                            child: Text(
-                              'Customer',
-                              textScaleFactor: !isShopkeeper ? 1.45 : 1.3,
-                              style: TextStyle(
-                                color: !isShopkeeper ? secondary : primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: _width * 1,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.42,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: isShopkeeper
-                              ? primary.withOpacity(0.8)
-                              : secondary.withOpacity(0),
-                        ),
-                        height: _width * 9,
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isShopkeeper = true;
-                            });
-                          },
-                          child: Center(
-                            child: Text(
-                              'Shopkeeper',
-                              textScaleFactor: isShopkeeper ? 1.45 : 1.3,
-                              style: TextStyle(
-                                color: isShopkeeper ? secondary : primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Flexible(
-                flex: 1,
-                child: Container(),
-              ),
+
               //email
               Container(
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                margin: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Email',
-                    icon: Icons.person,
+                    icon: FontAwesomeIcons.solidEnvelope,
                     textColor: primary,
                     isPasswordType: false,
                     controller: _emailTextController,
@@ -242,10 +164,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Container(),
               ),
               Container(
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                margin: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Name',
-                    icon: Icons.person,
+                    icon: FontAwesomeIcons.solidUser,
                     textColor: primary,
                     isPasswordType: false,
                     controller: _nameTextController,
@@ -255,12 +177,26 @@ class _SignUpPageState extends State<SignUpPage> {
                 flex: 1,
                 child: Container(),
               ),
+              Container(
+                margin: EdgeInsets.only(left: width * 4, right: width * 4),
+                child: textFieldUi(
+                    text: 'Contact No.',
+                    icon: FontAwesomeIcons.phone,
+                    textColor: primary,
+                    isPasswordType: false,
+                    controller: _contactNumberTextController,
+                    inputType: TextInputType.number),
+              ),
+              Flexible(
+                flex: 1,
+                child: Container(),
+              ),
               //password
               Container(
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                margin: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'New Password',
-                    icon: Icons.lock_outline,
+                    icon: FontAwesomeIcons.lock,
                     textColor: primary,
                     isPasswordType: true,
                     controller: _passwordTextController,
@@ -271,10 +207,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Container(),
               ),
               Container(
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                margin: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Confirm Password',
-                    icon: Icons.lock_outline,
+                    icon: FontAwesomeIcons.lock,
                     textColor: primary,
                     isPasswordType: true,
                     controller: _confirmPasswordTextController,
@@ -287,8 +223,8 @@ class _SignUpPageState extends State<SignUpPage> {
               //login button
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: _width * 10,
-                margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                height: width * 10,
+                margin: EdgeInsets.only(left: width * 4, right: width * 4),
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(90)),
                 child: ElevatedButton(
@@ -296,16 +232,15 @@ class _SignUpPageState extends State<SignUpPage> {
                   // onPressed: () {},
 
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.pressed)) {
+                    backgroundColor: WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.pressed)) {
                         return secondary;
                       }
                       return primary.withOpacity(0.8);
                     }),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(_width * 28))),
+                            borderRadius: BorderRadius.circular(width * 28))),
                   ),
                   child: _isLoading
                       ? const Center(
@@ -314,7 +249,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         )
                       : const Text(
-                          "Login",
+                          "Sign Up",
                           style: TextStyle(
                             color: secondary,
                             fontWeight: FontWeight.bold,
@@ -363,7 +298,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ],
           ),
         ),
-      ),
+      // ),
     );
   }
 }

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-
-import '../../models/transaction.dart';
-import '../../utils/colors.dart';
-import '../../widgets/transaction_details_box.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import '../../widgets/show_snackbar.dart';
 import 'package:intl/intl.dart';
+
+import '../../../models/transaction.dart';
+import '../../../utils/colors.dart';
+import '../../../widgets/transaction_details_box.dart';
+import '../../../widgets/show_snackbar.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({Key? key}) : super(key: key);
@@ -31,61 +33,58 @@ class _TransactionPageState extends State<TransactionPage> {
   }
 
   getall() async {
-    
     try {
       String endPoint = dotenv.env["URL"].toString();
-      final storage = new FlutterSecureStorage();
+      const storage = FlutterSecureStorage();
       String? value = await storage.read(key: "authtoken");
       var response = await http
-          .post(Uri.parse(endPoint + "/api/user/gettransactions"), body: {
+          .post(Uri.parse("$endPoint/transactionApi/getTransactions"), body: {
         "token": value,
       });
       var res = jsonDecode(response.body) as Map<String, dynamic>;
+
       if (res['flag']) {
-        var length_of_array = res['message'].length;
-        var array_of_res = res['message'];
-        print(length_of_array);
+        var arrayOfRes = res['message'] as List<dynamic>;
 
-        for (var i = 0; i < length_of_array; i++) {
-          var tranJson = res['message'][i];
+        for (var tranJson in arrayOfRes) {
           var tran = tranJson;
-          double amt = tran['amount'];
-          String remark = tran['description'];
-          String category = tran['category'];
-        
-          print(amt);
-          print(remark);
-          print(category);
-          transactions.add(UserTransaction(
-            amount: (tran['transactiontype']=='Income')?tran['amount']:-tran['amount'],
-            remark: tran['description'],
-            category: tran['category'],
-            transactionId: tran['_id'],
-            transactionDate: DateFormat('d/m/y').parse(tran['date']),
-          ));
+          double amt = double.parse(tran['amount'].toString());
 
+          DateTime tDate;
+
+          tDate = DateFormat('d/M/yyyy').parse(tran['date'].toString());
+
+          transactions.add(
+            UserTransaction(
+              amount: (tran['transactiontype'] == 'Income') ? amt : -1 * amt,
+              remark: tran['description'],
+              category: tran['category'],
+              transactionId: tran['_id'],
+              transactionDate: tDate,
+            ),
+          );
         }
-        setState(() {
-          
-        });
-        print(transactions);
+        setState(() {});
+        // print(transactions);
       } else {
+        if (!mounted) return;
         return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-            "Please contact admin to resolve",
-            res['message'],
-            pink,
-            Icons.close));
+            message: res['message'], ctype: ContentType.failure));
       }
     } catch (e) {
+      // print(e);
+      // print("Get All transactions error: " + e.toString());
+      if (!mounted) return;
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-          "Please contact admin to resolve", e.toString(), pink, Icons.close));
+        ctype: ContentType.failure,
+        message: "$e. Please contact admin to resolve",
+      ));
     }
   }
-   
-   
-     @override
+
+  @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
 
     getall();
   }
@@ -155,13 +154,16 @@ class _TransactionPageState extends State<TransactionPage> {
     //       category: 'Rent',
     //       transactionDate: DateTime.now()),
     // ];
-  print(transactions);
-  print(transactions.length);
-    double _width = MediaQuery.of(context).size.width * 0.01;
-    double _height = MediaQuery.of(context).size.height * 0.01;
+    // print(transactions);
+    // print(transactions.length);
+    double width = MediaQuery.of(context).size.width * 0.01;
+    // double _height = MediaQuery.of(context).size.height * 0.01;
     return Scaffold(
       backgroundColor: secondary,
       appBar: AppBar(
+        leading: InkWell(
+            onTap: () => Navigator.of(context).pop(),
+            child: const Icon(FontAwesomeIcons.arrowLeft)),
         // elevation: 0.0,
         title: const Text('Transactions'),
         backgroundColor: purple,
@@ -170,7 +172,8 @@ class _TransactionPageState extends State<TransactionPage> {
           ? const Center(
               child: Text(
               "No Transactions made",
-              textScaleFactor: 1.5,
+              // textScaleFactor: 1.5,
+              textScaler: TextScaler.linear(1.5),
               style: TextStyle(
                 color: white,
               ),
@@ -181,7 +184,7 @@ class _TransactionPageState extends State<TransactionPage> {
                 for (var data in transactions) ...[
                   TransactionBox(transaction: data),
                   SizedBox(
-                    height: _width * 5,
+                    height: width * 5,
                   ),
                 ]
               ],

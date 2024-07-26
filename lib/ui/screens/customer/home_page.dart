@@ -1,29 +1,47 @@
-import 'package:flame/game.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:splitify/ui/screens/customer/expense_tracker.dart';
-import 'package:splitify/ui/screens/customer/split_bills.dart';
 
 import '../../utils/colors.dart';
-// import '../../widgets/bg.dart';
+import '../../widgets/show_snackbar.dart';
+import 'expense_tracker/expense_tracker.dart';
+import 'group_splits/group_splits.dart';
+import 'split_bills/split_bills.dart';
 import 'user_profile_page.dart';
 
-class CusHomePage extends StatefulWidget {
-  const CusHomePage({super.key});
-
+class HomePage extends StatefulWidget {
+  HomePage({super.key, this.currentIndex = 0});
+  int currentIndex = 0;
   @override
-  State<CusHomePage> createState() => _CusHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _CusHomePageState extends State<CusHomePage> {
-  var _currentIndex = 0;
+class _HomePageState extends State<HomePage> {
+  final PageController _pageController = PageController(initialPage: 0);
 
-  PageController _pageController = PageController(initialPage: 0);
+  @override
+  initState() {
+    super.initState();
+    getContactsPermission();
+  }
 
-  static List<Widget> _widgetOptions = <Widget>[
+  getContactsPermission() async {
+    if (await Permission.contacts.request().isGranted) {
+      // Permission to access contacts is granted
+    } else {
+      // Permission to access contacts is denied
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          ctype: ContentType.failure,
+          message:
+              "Contact access denied. Please allow the app to access the contact list."));
+    }
+  }
+
+  static final List<Widget> _widgetOptions = <Widget>[
     const ExpenseTracker(),
     const SplitBillsPage(),
     // Text('Expense Tracker Page',
@@ -33,18 +51,13 @@ class _CusHomePageState extends State<CusHomePage> {
     // GameWidget(
     //   game: NeonSphereGame(),
     // ),
-    const Text('Bills Shopkeeper Page',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-    const UserProfile(),
-    // Text('Profile Page',
+    const GroupSplits(),
+    // const Text('Bills Shopkeeper Page',
+    //     style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+    // Text('Notification Page',
     // style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+    const UserProfile(),
   ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,16 +67,16 @@ class _CusHomePageState extends State<CusHomePage> {
         children: _widgetOptions,
         onPageChanged: (index) {
           setState(() {
-            _currentIndex = index;
+            widget.currentIndex = index;
           });
         },
       ),
       //  _widgetOptions.elementAt(_currentIndex),
       bottomNavigationBar: SalomonBottomBar(
         backgroundColor: secondaryLight,
-        currentIndex: _currentIndex,
+        currentIndex: widget.currentIndex,
         onTap: (i) => setState(() {
-          _currentIndex = i;
+          widget.currentIndex = i;
           _pageController.animateToPage(i,
               duration: const Duration(milliseconds: 500), curve: Curves.ease);
         }),
@@ -78,18 +91,25 @@ class _CusHomePageState extends State<CusHomePage> {
           /// Likes
           SalomonBottomBarItem(
             icon: const Icon(FontAwesomeIcons.circleDollarToSlot),
-            title: const Text("Bill Splits"),
+            title: const Text("Friends"),
             selectedColor: green,
             unselectedColor: Colors.white,
           ),
 
           /// Search
           SalomonBottomBarItem(
-            icon: const Icon(FontAwesomeIcons.shop),
-            title: const Text("Pay Shops"),
+            icon: const Icon(FontAwesomeIcons.userGroup),
+            title: const Text("Groups"),
             selectedColor: orange,
             unselectedColor: Colors.white,
           ),
+          //Notification
+          // SalomonBottomBarItem(
+          //   icon: const Icon(FontAwesomeIcons.solidBell),
+          //   title: const Text("Notifications"),
+          //   selectedColor: pink,
+          //   unselectedColor: Colors.white,
+          // ),
 
           /// Profile
           SalomonBottomBarItem(

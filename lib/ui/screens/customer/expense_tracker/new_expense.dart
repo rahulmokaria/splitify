@@ -1,15 +1,21 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
-
-import '../../utils/colors.dart';
-import '../../widgets/text_field_ui.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import '../../widgets/show_snackbar.dart';
+// import 'package:splitify/ui/screens/customer/expense_tracker/expense_tracker.dart';
+
+import '../../../utils/colors.dart';
+import '../../../utils/text_month.dart';
+import '../../../widgets/text_field_ui.dart';
+import '../../../widgets/show_snackbar.dart';
+import '../home_page.dart';
+
 class CreateNewExpense extends StatefulWidget {
-  bool isExpense;
-  CreateNewExpense({super.key, required this.isExpense});
+  final bool isExpense;
+  const CreateNewExpense({super.key, required this.isExpense});
 
   @override
   State<CreateNewExpense> createState() => _CreateNewExpenseState();
@@ -17,10 +23,10 @@ class CreateNewExpense extends StatefulWidget {
 
 class _CreateNewExpenseState extends State<CreateNewExpense> {
   final TextEditingController _amountTextController = TextEditingController();
-  String? cat = "";
+  String? cat = "Food";
   String? remark = "";
   DateTime date = DateTime.now();
-  
+
   final TextEditingController _remarkTextController = TextEditingController();
 
   String dropdownValue = 'Food';
@@ -45,13 +51,13 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
     'Retire pensions',
     'Other Incomes',
   ];
-  
-    String endPoint=dotenv.env["URL"].toString();
-  final storage = const FlutterSecureStorage();  
+
+  String endPoint = dotenv.env["URL"].toString();
+  final storage = const FlutterSecureStorage();
 
   var categories;
 
-  var _isLoading = false;
+  bool _isLoading = false;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -66,13 +72,14 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
               splashColor: secondary,
               colorScheme: ColorScheme.light(
                 primary: secondaryLight, // <-- SEE HERE
-                background: secondary,
+                surface: secondary,
                 onPrimary: purple, // <-- SEE HERE
-                // onSurface: white.withOpacity(0.6), // <-- SEE HERE
+                onSurface: white.withOpacity(0.6), // <-- SEE HERE
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: purple, // button text color
+                  // primary: purple, // button text color
+                  backgroundColor: purple,
                 ),
               ),
             ),
@@ -82,92 +89,83 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
     if (picked != null && picked != date) {
       setState(() {
         date = picked;
-        print(date.runtimeType);
+        // print(date.runtimeType);
       });
     }
   }
 
-  textMonth(num month) {
-    switch (month) {
-      case 1:
-        return "January";
-      case 2:
-        return "February";
-      case 3:
-        return "March";
-      case 4:
-        return "April";
-      case 5:
-        return "May";
-      case 6:
-        return "June";
-      case 7:
-        return "July";
-      case 8:
-        return "August";
-      case 9:
-        return "September";
-      case 10:
-        return "October";
-      case 11:
-        return "November";
-      case 12:
-        return "December";
-    }
-  }
-
-  postdata() async{
+  postdata() async {
     try {
-      String transactionType="";
-      if(widget.isExpense){
-        transactionType="Expense";
+      setState(() {
+        _isLoading = true;
+      });
+      String transactionType = "";
+      if (widget.isExpense) {
+        transactionType = "Expense";
+      } else {
+        transactionType = "Income";
       }
-      else{
-        transactionType="Income";
-      }
+      // print("trying to add new transaction");
       String? value = await storage.read(key: "authtoken");
       date = DateTime.parse(date.toString());
       var formattedDate = "${date.day}/${date.month}/${date.year}";
-      var response=await http.post(Uri.parse(endPoint+"/api/user/addtransaction"),
-          body:{
-            "token":value,
-            "transactiontype":transactionType,
-            "addamount":_amountTextController.text,
-            "description":_remarkTextController.text,
-            "category":cat,
-            "date":formattedDate
-          });
-          var res=jsonDecode(response.body) as Map<String,dynamic>;
-          if(res['flag']){
-            return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], "Keep Adding 😀😀", green, Icons.celebration));
-          }
-          else{
-            return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              res['message'], "Please contact admin to resolve", red, Icons.close));
-          }
+      var response = await http
+          .post(Uri.parse("$endPoint/transactionApi/addTransaction"), body: {
+        "token": value,
+        "transactionType": transactionType,
+        "addAmount": _amountTextController.text,
+        "description": _remarkTextController.text,
+        "category": cat,
+        "date": formattedDate
+      });
+      var res = jsonDecode(response.body) as Map<String, dynamic>;
+      if (res['flag']) {
+        setState(() {
+          _isLoading = false;
+        });
+        if (!mounted) return;
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (_) => HomePage()));
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          ctype: ContentType.success,
+          message: res['message'] + ". Keep Adding 😀😀",
+        ));
+      } else {
+        // print("add transaction error: ${res['message']}");
+        if (!mounted) return;
+        return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
+          ctype: ContentType.failure,
+          message: res['message'],
+        ));
+      }
     } catch (e) {
+      // print("transaction error: $e");
       return ScaffoldMessenger.of(context).showSnackBar(showCustomSnackBar(
-              e.toString(), "Please contact admin to resolve", red, Icons.close));
+        ctype: ContentType.failure,
+        message: "$e  Please contact admin to resolve",
+      ));
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
+    // implement initState
     super.initState();
     dropdownValue = widget.isExpense ? 'Food' : 'Salary';
   }
 
   @override
   Widget build(BuildContext context) {
-    var _width = MediaQuery.of(context).size.width / 100;
-    var _height = MediaQuery.of(context).size.height / 100;
+    var width = MediaQuery.of(context).size.width / 100;
+    // var _height = MediaQuery.of(context).size.height / 100;
     categories = widget.isExpense ? categoriesExpense : categoriesIncome;
-    
+
     return Scaffold(
       backgroundColor: secondary,
       appBar: AppBar(
+        leading: InkWell(
+            onTap: () => Navigator.of(context).pop(),
+            child: const Icon(FontAwesomeIcons.arrowLeft)),
         title: Text(
           widget.isExpense ? 'New Expense' : 'New Income',
         ),
@@ -175,28 +173,28 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(_width * 5),
+          padding: EdgeInsets.all(width * 5),
           child: Column(
             children: [
               Container(
-                // padding: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                // padding: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Amount',
-                    icon: Icons.wallet,
+                    icon: FontAwesomeIcons.wallet,
                     textColor: purple,
                     isPasswordType: false,
                     controller: _amountTextController,
                     inputType: TextInputType.number),
               ),
               SizedBox(
-                height: _width * 5,
+                height: width * 5,
               ),
               Container(
                 decoration: BoxDecoration(
                   color: white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(30),
                 ),
-                padding: EdgeInsets.fromLTRB(_width * 4, 5, _width * 4, 5),
+                padding: EdgeInsets.fromLTRB(width * 4, 5, width * 4, 5),
                 child: Row(
                   children: [
                     Text(
@@ -204,10 +202,11 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                       style: TextStyle(
                         color: purple,
                       ),
-                      textScaleFactor: 1.2,
+                      // textScaleFactor: 1.2,
+                      textScaler: const TextScaler.linear(1.2),
                     ),
                     SizedBox(
-                      width: _width * 10,
+                      width: width * 10,
                     ),
                     DropdownButton(
                       value: dropdownValue,
@@ -219,7 +218,8 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                           value: value,
                           child: Text(
                             value,
-                            textScaleFactor: 1.2,
+                            // textScaleFactor: 1.2,
+                            textScaler: const TextScaler.linear(1.2),
                           ),
                         );
                       }).toList(),
@@ -228,9 +228,9 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                         cat = dropdownValue;
                         setState(() {});
 
-                        print(cat);
+                        // print(cat);
                       },
-                      icon: const Icon(Icons.keyboard_arrow_down),
+                      icon: const Icon(FontAwesomeIcons.chevronDown),
                       style: TextStyle(
                         color: purple,
                       ),
@@ -239,7 +239,7 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                 ),
               ),
               SizedBox(
-                height: _width * 5,
+                height: width * 5,
               ),
               // TextFormField(
               //   controller: _remarkTextController,
@@ -271,17 +271,17 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
               //   // hint
               // ),
               Container(
-                // margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                // margin: EdgeInsets.only(left: width * 4, right: width * 4),
                 child: textFieldUi(
                     text: 'Description',
-                    icon: Icons.menu,
+                    icon: FontAwesomeIcons.bars,
                     textColor: purple,
                     isPasswordType: false,
                     controller: _remarkTextController,
                     inputType: TextInputType.streetAddress),
               ),
               SizedBox(
-                height: _width * 5,
+                height: width * 5,
               ),
               Container(
                 decoration: BoxDecoration(
@@ -298,13 +298,14 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                         style: TextStyle(
                           color: purple,
                         ),
-                        textScaleFactor: 1.2,
+                        // textScaleFactor: 1.2,
+                        textScaler: const TextScaler.linear(1.2),
                       ),
                       const SizedBox(
                         width: 20,
                       ),
                       Text(
-                        "${date.day.toString() + " " + textMonth(date.month)} ${date.year}",
+                        "${date.day} ${textMonth(date.month)} ${date.year}",
                         style: TextStyle(
                           color: purple,
                         ),
@@ -314,13 +315,13 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
                 ),
               ),
               SizedBox(
-                height: _width * 2,
+                height: width * 2,
               ),
               const Divider(
                 color: white,
               ),
               SizedBox(
-                height: _width * 2,
+                height: width * 2,
               ),
               // Container(
               //   height: 50,
@@ -349,24 +350,27 @@ class _CreateNewExpenseState extends State<CreateNewExpense> {
               // ),
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: _width * 15,
-                // margin: EdgeInsets.only(left: _width * 4, right: _width * 4),
+                height: width * 15,
+                // margin: EdgeInsets.only(left: width * 4, right: width * 4),
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(90)),
                 child: ElevatedButton(
                   // onPressed: () => AddExpense(),
-                  onPressed: () {postdata();},
+                  onPressed: () {
+                    postdata();
+                  },
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.pressed)) {
-                        return secondary;
-                      }
-                      return purple.withOpacity(0.8);
-                    }),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    backgroundColor: WidgetStateProperty.resolveWith(
+                      (states) {
+                        if (states.contains(WidgetState.pressed)) {
+                          return secondary;
+                        }
+                        return purple.withOpacity(0.8);
+                      },
+                    ),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(_width * 28))),
+                            borderRadius: BorderRadius.circular(width * 28))),
                   ),
                   child: _isLoading
                       ? const Center(

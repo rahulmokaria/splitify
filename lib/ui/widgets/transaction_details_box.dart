@@ -1,42 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:splitify/ui/screens/customer/edit_transaction_popup.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:splitify/ui/screens/customer/expense_tracker/edit_transaction_popup.dart';
 
 import '../models/transaction.dart';
 import '../utils/colors.dart';
+import '../utils/text_month.dart';
 import 'glassmorphic_container.dart';
 
-textMonth(num month) {
-  switch (month) {
-    case 1:
-      return "January";
-    case 2:
-      return "February";
-    case 3:
-      return "March";
-    case 4:
-      return "April";
-    case 5:
-      return "May";
-    case 6:
-      return "June";
-    case 7:
-      return "July";
-    case 8:
-      return "August";
-    case 9:
-      return "September";
-    case 10:
-      return "October";
-    case 11:
-      return "November";
-    case 12:
-      return "December";
-  }
-}
 
 class TransactionBox extends StatelessWidget {
-  UserTransaction transaction;
-  TransactionBox({super.key, required this.transaction});
+  final UserTransaction transaction;
+  const TransactionBox({super.key, required this.transaction});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +28,8 @@ class TransactionBox extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(transaction.remark,
-                    textScaleFactor: 1.75,
+                    // textScaleFactor: 1.75,
+                    textScaler: const TextScaler.linear(1.75),
                     style: TextStyle(
                       color: purple,
                     ),
@@ -82,7 +57,8 @@ class TransactionBox extends StatelessWidget {
                         ),
                         child: Text(
                           transaction.category,
-                          textScaleFactor: 1.2,
+                          // textScaleFactor: 1.2,
+                          textScaler: const TextScaler.linear(1.2),
                           style: const TextStyle(
                             color: white,
                           ),
@@ -92,7 +68,7 @@ class TransactionBox extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        "${"${transaction.transactionDate.day} " + textMonth(transaction.transactionDate.month)} ${transaction.transactionDate.year}",
+                        "${transaction.transactionDate.day} ${textMonth(transaction.transactionDate.month)} ${transaction.transactionDate.year}",
                         style: const TextStyle(
                           color: white,
                         ),
@@ -103,12 +79,18 @@ class TransactionBox extends StatelessWidget {
                   Row(
                     children: [
                       InkWell(
-                        onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
+                        onTap: () =>
+                            // Navigator.of(context).push(
+                            // MaterialPageRoute(
+                            showDialog(
+                                context: context,
                                 builder: (_) => EditTransactionCard(
-                            transaction: transaction,))),
-                        child: Icon(
-                          Icons.edit,
+                                      transaction: transaction,
+                                    )
+                                // )
+                                ),
+                        child: const Icon(
+                          FontAwesomeIcons.pen,
                           color: white,
                         ),
                       ),
@@ -136,7 +118,8 @@ class TransactionBox extends StatelessWidget {
                         (transaction.amount >= 0)
                             ? "+${transaction.amount}"
                             : transaction.amount.toString(),
-                        textScaleFactor: 1.2,
+                        // textScaleFactor: 1.2,
+                        textScaler: const TextScaler.linear(1.2),
                         style: const TextStyle(
                           color: white,
                         ),
@@ -150,6 +133,5 @@ class TransactionBox extends StatelessWidget {
         ),
       ),
     );
-    
   }
 }

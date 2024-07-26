@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../utils/colors.dart';
+import '../../../utils/colors.dart';
 import 'split_bills.dart';
 
-class FriendDetails extends StatefulWidget {
-  Friend friend;
-  FriendDetails({
+class GroupDetails extends StatefulWidget {
+  Group group;
+  GroupDetails({
     Key? key,
-    required this.friend,
+    required this.group,
   }) : super(key: key);
 
   @override
-  State<FriendDetails> createState() => _FriendDetailsState();
+  State<GroupDetails> createState() => _GroupDetailsState();
 }
 
-class _FriendDetailsState extends State<FriendDetails> {
+class _GroupDetailsState extends State<GroupDetails> {
   bool _isLoading = false;
 
   @override
@@ -62,7 +61,7 @@ class _FriendDetailsState extends State<FriendDetails> {
                         ),
                         child: Image.asset(
                           // widget.cUser.backCoverImg
-                          'assets/greenbg.jpg',
+                          'assets/greenbg.png',
                           height: _width * 50,
                           width: _width * 100,
                           fit: BoxFit.cover,
@@ -103,7 +102,7 @@ class _FriendDetailsState extends State<FriendDetails> {
                         height: MediaQuery.of(context).size.width * 0.4,
                         width: MediaQuery.of(context).size.width * 0.4,
                         child: Image.network(
-                          widget.friend.photoUrl,
+                          widget.group.profilePicUrl,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -112,7 +111,7 @@ class _FriendDetailsState extends State<FriendDetails> {
                 ],
               ),
               Text(
-                widget.friend.name,
+                widget.group.groupName,
                 textScaleFactor: 1.5,
                 style: const TextStyle(
                   color: white,
