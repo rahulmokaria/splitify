@@ -1,19 +1,23 @@
 import 'dart:ui';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
+import 'package:splitify/ui/utils/colors.dart';
 
 class GlassMorphism extends StatelessWidget {
   final Widget child;
   final double start;
   final double end;
   final double borderRadius;
+  final Color accent;
   const GlassMorphism({
     Key? key,
     required this.child,
     required this.start,
     required this.end,
     required this.borderRadius,
-  }) : super(key: key);
+    this.accent=white
+  }
+  ) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +28,8 @@ class GlassMorphism extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.white.withOpacity(start),
-                Colors.white.withOpacity(end),
+                accent.withOpacity(start),
+                accent.withOpacity(end),
               ],
               begin: AlignmentDirectional.topStart,
               end: AlignmentDirectional.bottomEnd,
@@ -33,7 +37,7 @@ class GlassMorphism extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
             border: Border.all(
               width: 1.5,
-              color: Colors.white.withOpacity(0.2),
+              color: accent.withOpacity(0.2),
             ),
           ),
           child: Container(

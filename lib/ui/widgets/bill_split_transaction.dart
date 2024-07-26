@@ -1,46 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:splitify/ui/screens/customer/expense_tracker/edit_transaction_popup.dart';
+// import 'package:splitify/ui/screens/customer/expense_tracker/edit_transaction_popup.dart';
 
+import '../models/friend.dart';
 import '../models/transaction.dart';
 import '../screens/customer/split_bills/edit_bill_split_page.dart';
 import '../utils/colors.dart';
+import '../utils/text_month.dart';
 import 'glassmorphic_container.dart';
 
-textMonth(num month) {
-  switch (month) {
-    case 1:
-      return "January";
-    case 2:
-      return "February";
-    case 3:
-      return "March";
-    case 4:
-      return "April";
-    case 5:
-      return "May";
-    case 6:
-      return "June";
-    case 7:
-      return "July";
-    case 8:
-      return "August";
-    case 9:
-      return "September";
-    case 10:
-      return "October";
-    case 11:
-      return "November";
-    case 12:
-      return "December";
-  }
-}
-
 class BillSplitTransactionBox extends StatelessWidget {
-  String friendName;
-  BillSplitTransaction transaction;
-  BillSplitTransactionBox(
-      {super.key, required this.transaction, required this.friendName});
+  final Friend friend;
+  final BillSplitTransaction transaction;
+  const BillSplitTransactionBox(
+      {super.key, required this.transaction, required this.friend});
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +23,7 @@ class BillSplitTransactionBox extends StatelessWidget {
       child: GlassMorphism(
         start: .25,
         end: 0,
+        accent: green,
         borderRadius: 20,
         child: Container(
           padding: EdgeInsets.all(width * 3),
@@ -65,11 +39,12 @@ class BillSplitTransactionBox extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
+                      SizedBox(
                         width: width * 66,
                         child: Text(transaction.remark,
-                            textScaleFactor: 1.2,
-                            style: TextStyle(
+                            // textScaleFactor: 1.2,
+                            textScaler: const TextScaler.linear(1.2),
+                            style: const TextStyle(
                               color: white,
                             ),
                             maxLines: 1,
@@ -79,8 +54,8 @@ class BillSplitTransactionBox extends StatelessWidget {
                         height: width * 1,
                       ),
                       Text(
-                          "${transaction.paidBy == friendName ? friendName : "You"} paid ${transaction.amount}",
-                          textScaleFactor: 1,
+                          "${transaction.paidBy == friend.friendName ? friend.friendName : "You"} paid ${transaction.amount}",
+                          // textScaleFactor: 1,
                           style: TextStyle(
                             color: white.withOpacity(0.8),
                           ),
@@ -108,7 +83,7 @@ class BillSplitTransactionBox extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            "${"${transaction.transactionDate.day} " + textMonth(transaction.transactionDate.month)} ${transaction.transactionDate.year}",
+                            "${transaction.transactionDate.day} ${textMonth(transaction.transactionDate.month)} ${transaction.transactionDate.year}",
                             style: TextStyle(
                               color: white.withOpacity(0.8),
                             ),
@@ -125,7 +100,7 @@ class BillSplitTransactionBox extends StatelessWidget {
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => EditBillSplitPage(
-                                  friendName: friendName,
+                                  friend: friend,
                                   billSplitTransaction: transaction,
                                 ),
                               ),
@@ -144,7 +119,7 @@ class BillSplitTransactionBox extends StatelessWidget {
                   SizedBox(
                     width: width * 3,
                   ),
-                  Container(
+                  SizedBox(
                     width: width * 20,
                     height: width * 20,
                     // decoration: BoxDecoration(
@@ -160,12 +135,13 @@ class BillSplitTransactionBox extends StatelessWidget {
                           height: width * 3,
                         ),
                         Text(
-                          (transaction.paidBy != friendName)
+                          (transaction.paidBy != friend.friendName)
                               ? "you lent"
                               : "you borrowed",
-                          textScaleFactor: 0.8,
+                          // textScaleFactor: 0.8,
+                          textScaler: const TextScaler.linear(0.8),
                           style: TextStyle(
-                            color: (transaction.paidBy != friendName)
+                            color: (transaction.paidBy != friend.friendName)
                                 ? green
                                 : red,
                           ),
@@ -175,9 +151,10 @@ class BillSplitTransactionBox extends StatelessWidget {
                         ),
                         Text(
                           transaction.shareOfBorrower.toString(),
-                          textScaleFactor: 1.2,
+                          // textScaleFactor: 1.2,
+                          textScaler: const TextScaler.linear(1.2),
                           style: TextStyle(
-                            color: (transaction.paidBy != friendName)
+                            color: (transaction.paidBy != friend.friendName)
                                 ? green
                                 : red,
                           ),

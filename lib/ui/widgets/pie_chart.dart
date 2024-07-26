@@ -7,53 +7,67 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import './show_snackbar.dart';
+// import './show_snackbar.dart';
 
-var showIndex = 0;
 Color highlightColor = secondaryLight;
 
 class PieChart extends StatefulWidget {
-  PieChart({Key? key, required this.showIndex}) : super(key: key);
-  var showIndex = 0;
+  const PieChart({Key? key, this.totalExpense}) : super(key: key);
+  final totalExpense;
   @override
   State<PieChart> createState() => _PieChartState();
 }
 
 class _PieChartState extends State<PieChart> {
+  // var catValue;
+  var showIndex = null;
+  var catValue = {
+    'Food': 0,
+    'Shopping': 0,
+    'Medicines': 0,
+    'Transport': 0,
+    'Utilities': 0,
+    'Education': 0,
+    'Entertainment': 0,
+    'Clothing': 0,
+    'Rent': 0,
+    'Others': 0,
+  };
+
   getpiechart() async {
     try {
       String endPoint = dotenv.env["URL"].toString();
-      final storage = new FlutterSecureStorage();
+      const storage = FlutterSecureStorage();
       String? value = await storage.read(key: "authtoken");
-      var response = await http.post(
-          Uri.parse("$endPoint/api/user/getpiechart"),
+      var response = await http.post(Uri.parse("$endPoint/userApi/getPieChart"),
           body: {"token": value});
-      print(response.body);
-      print(response.body.runtimeType);
+      // print(response.body);
+      // print(response.body.runtimeType);
       Map<String, dynamic> res =
           jsonDecode(response.body) as Map<String, dynamic>;
-      double length = res['message'].length;
-      print('type = ');
-      print(res.runtimeType);
-      var intialcatValue = [
-        "Food",
-        "Shopping",
-        "Medicines",
-        "Transport",
-        "Utilities",
-        "Education",
-        "Entertainment",
-        "Clothing",
-        "Rent",
-        "Others"
-      ];
-      for (int i = 0; i < length; i++) {
-        catValue[res['message'][i]['key']] = res['message'][i]['value'];
+      // int length = res['message'].length;
+      // print(length);
+      // print('type = ');
+      // print(res.runtimeType);
+
+      for (var item in res['message']) {
+        if (item['key'] != null && item['value'] != null) {
+          // Ensure that value is treated as an integer
+          if (item['value'] is String) {
+            catValue[item['key']] = int.parse(item['value']);
+          } else if (item['value'] is int) {
+            catValue[item['key']] = item['value'];
+          } else {
+            throw Exception("Unexpected value type");
+          }
+        }
       }
-      print(catValue);
+      // print("catValue");
+      // print(catValue);
       setState(() {});
     } catch (e) {
-      print(e);
+      // print(e);
+      // print("Pie chart error: " + e.toString());
     }
   }
 
@@ -65,37 +79,42 @@ class _PieChartState extends State<PieChart> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width * 0.01;
-    double _height = MediaQuery.of(context).size.height * 0.01;
-    
-    return Container(
-      width: _width * 80,
+    double width = MediaQuery.of(context).size.width * 0.01;
+
+    return SizedBox(
+      width: width * 80,
       // padding: const EdgeInsets.all(20
       child: GlassMorphism(
         start: 0.25,
         end: 0,
+        accent: purple,
         borderRadius: 20,
         child: Column(
           children: [
             SizedBox(
-              height: _width * 5,
+              height: width * 5,
             ),
             const Text(
               "Expense Summary:",
-              textScaleFactor: 1.4,
+              // textScaleFactor: 1.4,
+              textScaler: TextScaler.linear(1.4),
               style: TextStyle(color: white),
             ),
-            // (totalExpense == 0)
-            (0 == 1)
+            (widget.totalExpense == 0)
+                // (0 == 1)
                 ? Column(
                     children: [
                       SizedBox(
-                        height: _width * 5,
+                        height: width * 5,
                       ),
                       Text(
                         "No expense made",
-                        textScaleFactor: 1.1,
-                        style: TextStyle(color: black),
+                        // textScaleFactor: 1.1,
+                        textScaler: const TextScaler.linear(1.1),
+                        style: TextStyle(color: purple),
+                      ),
+                      SizedBox(
+                        height: width * 5,
                       ),
                     ],
                   )
@@ -128,7 +147,7 @@ class _PieChartState extends State<PieChart> {
                       Container(
                         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                         height:
-                            showIndex == data.index ? _width * 12 : _width * 10,
+                            showIndex == data.index ? width * 12 : width * 10,
                         decoration: BoxDecoration(
                           color: showIndex == data.index
                               ? purple.withOpacity(0.3)
@@ -138,7 +157,11 @@ class _PieChartState extends State<PieChart> {
                         child: InkWell(
                           onTap: () {
                             setState(() {
-                              showIndex = data.index;
+                              if (showIndex != data.index) {
+                                showIndex = data.index;
+                              } else {
+                                showIndex = null;
+                              }
                             });
                           },
                           child: Row(
@@ -156,10 +179,11 @@ class _PieChartState extends State<PieChart> {
                               ),
                               Text(
                                 data.x,
-                                textScaleFactor: 1.2,
+                                // textScaleFactor: 1.2,
+                                textScaler: const TextScaler.linear(1.2),
                                 style: TextStyle(
                                   color:
-                                      showIndex == data.index ? purple : white,
+                                      showIndex == data.index ? white : purple,
                                 ),
                               ),
                             ],
@@ -185,7 +209,7 @@ class ChartData {
     required this.x,
     required this.color,
   });
-  var index;
+  int index;
   String x;
   Color color;
 }
@@ -245,16 +269,3 @@ final List<ChartData> chartData = [
     color: const Color.fromARGB(255, 39, 125, 161),
   ),
 ];
-
-var catValue = {
-  'Food': 20,
-  'Shopping': 30,
-  'Medicines': 20,
-  'Transport': 100,
-  'Utilities': 10,
-  'Education': 50,
-  'Entertainment': 200,
-  'Clothing': 10,
-  'Rent': 200,
-  'Others': 5,
-};

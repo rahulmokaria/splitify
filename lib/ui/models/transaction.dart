@@ -23,7 +23,8 @@ class UserTransaction {
 }
 
 class BillSplitTransaction {
-  String id;
+  String transactionId;
+  String friendDebtId;
   double shareOfPayer;
   double shareOfBorrower;
   String paidBy;
@@ -37,7 +38,8 @@ class BillSplitTransaction {
     required this.paidBy,
     required this.amount,
     required this.remark,
-    required this.id,
+    required this.friendDebtId,
+    required this.transactionId,
     required this.transactionDate,
   });
 
@@ -48,4 +50,27 @@ class BillSplitTransaction {
       'remark': remark,
     };
   }
+}
+
+class GroupTransaction {
+  String groupId;
+  Map<String, Map<String, double>> participants; // userId, userName, amount
+  double totalAmount;
+  String transactionId;
+  String paidById;
+
+  String remark;
+  DateTime date;
+  String paidByName;
+
+  GroupTransaction({
+    required this.groupId,
+    required this.participants,
+    required this.transactionId,
+    required this.totalAmount,
+    required this.paidById,
+    required this.remark,
+    required this.date,
+    required this.paidByName,
+  });
 }
